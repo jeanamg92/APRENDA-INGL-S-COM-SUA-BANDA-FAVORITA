@@ -17,8 +17,10 @@ window.AudioPlayer = (() => {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
+  const EXTENSAO_AUDIO = /\.(mp3|m4a)$/i;
+
   const tituloDeArquivo = (nome) => decodeURIComponent(nome)
-    .replace(/\.mp3$/i, '')
+    .replace(EXTENSAO_AUDIO, '')
     .replace(/[_-]+/g, ' ')
     .trim() || 'Faixa';
 
@@ -32,7 +34,7 @@ window.AudioPlayer = (() => {
   };
 
   const montarFaixas = (arquivos) => arquivos
-    .filter((nome) => /\.mp3$/i.test(nome))
+    .filter((nome) => EXTENSAO_AUDIO.test(nome))
     .map((nome) => {
       const arquivo = nome.split('/').pop().split('?')[0];
       return {
@@ -56,12 +58,12 @@ window.AudioPlayer = (() => {
     }
 
     const encontrados = new Set();
-    for (const match of texto.matchAll(/href\s*=\s*["']([^"']+\.mp3)["']/gi)) {
+    for (const match of texto.matchAll(/href\s*=\s*["']([^"']+\.(?:mp3|m4a))["']/gi)) {
       const bruto = decodeURIComponent(match[1]).replace(/^\.\//, '');
       const arquivo = bruto.split('/').pop();
       if (arquivo && !arquivo.startsWith('?')) encontrados.add(arquivo);
     }
-    if (!encontrados.size) throw new Error('nenhum_mp3_no_indice');
+    if (!encontrados.size) throw new Error('nenhum_audio_no_indice');
     return montarFaixas([...encontrados]);
   };
 
@@ -185,7 +187,7 @@ window.AudioPlayer = (() => {
     const playBtn = dock.querySelector('[data-audio="play"]');
     const titleEl = dock.querySelector('[data-audio="title"]');
     if (titleEl) {
-      const texto = e.faixa ? `${e.faixa.title} — ${e.faixa.artist}` : 'solte mp3 em /assets/audio';
+      const texto = e.faixa ? `${e.faixa.title} — ${e.faixa.artist}` : 'solte mp3/m4a em /assets/audio';
       titleEl.textContent = texto;
     }
     dock.querySelector('[data-audio="current"]').textContent = e.currentLabel;
@@ -218,8 +220,8 @@ window.AudioPlayer = (() => {
     }
     dock.dataset.bound = 'true';
     dock.innerHTML = `
-      <div class="audio-dock-inner" role="group" aria-label="Player MP3">
-        <span class="audio-dock-badge" aria-hidden="true">MP3</span>
+      <div class="audio-dock-inner" role="group" aria-label="Player de audio">
+        <span class="audio-dock-badge" aria-hidden="true">♪</span>
         <div class="audio-dock-controls">
           <button type="button" data-audio="prev" title="Anterior" aria-label="Faixa anterior">‹‹</button>
           <button type="button" data-audio="play" title="Play" aria-pressed="false" aria-label="Play ou pause">▶</button>
@@ -261,8 +263,8 @@ window.AudioPlayer = (() => {
     const playBtn = card.querySelector('.play-toggle');
     const volume = card.querySelector('#player-volume');
 
-    if (title) title.textContent = e.faixa?.title || 'Sem MP3';
-    if (artist) artist.textContent = e.faixa ? 'assets/audio · aleatório' : 'solte .mp3 em assets/audio';
+    if (title) title.textContent = e.faixa?.title || 'Sem audio';
+    if (artist) artist.textContent = e.faixa ? 'assets/audio · aleatório' : 'solte .mp3 ou .m4a em assets/audio';
     if (current) current.textContent = e.currentLabel;
     if (duration) duration.textContent = e.durationLabel;
     if (progress) progress.style.width = `${e.progress}%`;

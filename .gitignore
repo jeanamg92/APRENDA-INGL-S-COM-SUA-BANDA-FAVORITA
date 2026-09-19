@@ -4,3 +4,14 @@ Thumbs.db
 *.log
 .env
 .env.*
+storage/*.sqlite
+storage/*.sqlite-journal
+storage/*.sqlite-wal
+storage/*.sqlite-shm
+config.local.php
+assets/audio/*.mp3
+assets/audio/*.m4a
+*.mp3
+*.m4a
+!assets/audio/lista.json
+!assets/audio/.gitkeep

@@ -1,20 +1,28 @@
-﻿# Aprenda Inglês com sua Banda Favorita
+﻿# From Lyrics to Language
 
-Template estático para a Semana Midiática 2026. O projeto usa somente HTML5, CSS3 e JavaScript vanilla. Não há Vite, React, framework, backend, banco de dados ou build step.
+Site da Semana Midiática 2026 (HTML/CSS/JS) com painel PHP + SQLite para editar artigos e depoimentos.
 
 ## Como abrir
 
-Abra `index.html` diretamente no navegador. Para manter a navegação e os módulos JavaScript funcionando em alguns navegadores, também é possível servir a pasta com qualquer servidor HTTP simples.
+**Local com painel/API:**
+
+```bash
+php -S localhost:8080 -t .
+```
+
+Depois abra `http://localhost:8080/` e o admin em `http://localhost:8080/admin/entrar.php`.
+
+Sem PHP (só o front), os arquivos em `data/` continuam como fallback.
 
 ## Estrutura
 
-- `index.html`, `artigos.html`, `artigo.html`, `alunos.html`, `relato.html`, `sobre.html`
-- `css/styles.css`
-- `js/app.js`
-- `data/articles.js` e `data/students.js`
-- `assets/` com as imagens fornecidas no template e duas referências históricas reais dos Beatles
+- Páginas: `index.html`, `artigos.html`, `artigo.html`, `alunos.html`, `relato.html`, `sobre.html`
+- Front: `css/styles.css`, `js/app.js`, `data/`
+- API: `api/artigos.php`, `api/alunos.php`
+- Admin: `admin/` (login + CRUD)
+- Banco: `storage/site.sqlite` (criado na primeira visita; seed em `storage/seed/`)
 
-Os dados dos artigos e relatos estão separados para facilitar a substituição futura por uma API ou backend.
+Detalhes do painel: `admin/LEIA-ME.md`.
 
 ## Créditos de imagens
 
@@ -38,16 +46,16 @@ O formulário da home busca música + artista na API pública do LingoClip (`htt
 
 ## Playlist de áudio
 
-Coloque qualquer arquivo `.mp3` em:
+Coloque arquivos `.mp3` ou `.m4a` em:
 
 `assets/audio/`
 
-Não precisa de nome específico. O player lê os MP3 da pasta (ou de `assets/audio/lista.json` se o servidor não listar o diretório) e toca em ordem **aleatória**.
+Não precisa de nome específico. O player lê os áudios da pasta (ou de `assets/audio/lista.json` se o servidor não listar o diretório) e toca em ordem **aleatória**.
 
 Se o Live Server não listar a pasta sozinho, atualize `lista.json` com os nomes dos arquivos, por exemplo:
 
 ```json
-["musica-a.mp3", "outra.mp3"]
+["musica-a.mp3", "outra.m4a"]
 ```
 
 O player da home e a barra fixa usam a mesma trilha. Ao mudar de página, a posição é salva em `sessionStorage` e a música tenta continuar.

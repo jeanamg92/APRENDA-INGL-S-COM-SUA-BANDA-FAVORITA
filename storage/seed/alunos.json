@@ -1,0 +1,112 @@
+{
+  "alunos": [
+    {
+      "id": "sofia",
+      "name": "Sofia",
+      "className": "6º C",
+      "song": "Something",
+      "artist": "The Beatles",
+      "color": "yellow",
+      "avatar": "SO",
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "learned": [
+        "lorem",
+        "ipsum",
+        "dolor"
+      ],
+      "thought": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "discovered": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "lesson": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    {
+      "id": "davi",
+      "name": "Davi",
+      "className": "6º C",
+      "song": "Hey Jude",
+      "artist": "The Beatles",
+      "color": "aqua",
+      "avatar": "DA",
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "learned": [
+        "lorem",
+        "ipsum",
+        "dolor"
+      ],
+      "thought": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "discovered": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "lesson": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    {
+      "id": "emilly",
+      "name": "Emilly",
+      "className": "6º C",
+      "song": "Strawberry Fields Forever",
+      "artist": "The Beatles",
+      "color": "pink",
+      "avatar": "EM",
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "learned": [
+        "lorem",
+        "ipsum",
+        "dolor"
+      ],
+      "thought": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "discovered": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "lesson": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    {
+      "id": "arthur",
+      "name": "Arthur",
+      "className": "6º C",
+      "song": "Something",
+      "artist": "The Beatles",
+      "color": "violet",
+      "avatar": "AR",
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "learned": [
+        "lorem",
+        "ipsum",
+        "dolor"
+      ],
+      "thought": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "discovered": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "lesson": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    {
+      "id": "fabricio",
+      "name": "Fabricio",
+      "className": "6º C",
+      "song": "Hey Jude",
+      "artist": "The Beatles",
+      "color": "orange",
+      "avatar": "FA",
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "learned": [
+        "lorem",
+        "ipsum",
+        "dolor"
+      ],
+      "thought": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "discovered": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "lesson": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    {
+      "id": "kemelly",
+      "name": "Kemelly",
+      "className": "6º C",
+      "song": "Strawberry Fields Forever",
+      "artist": "The Beatles",
+      "color": "blue",
+      "avatar": "KE",
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "learned": [
+        "lorem",
+        "ipsum",
+        "dolor"
+      ],
+      "thought": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "discovered": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "lesson": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    }
+  ]
+}

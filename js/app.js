@@ -1,5 +1,5 @@
-﻿const articles = window.SITE_ARTICLES || [];
-const students = window.SITE_STUDENTS || [];
+﻿let articles = window.SITE_ARTICLES || [];
+let students = window.SITE_STUDENTS || [];
 const i18n = window.SITE_I18N || { pt: {}, en: {} };
 
 const root = document.querySelector('#main-content');
@@ -139,7 +139,7 @@ function renderHeader() {
           <a href="./sobre.html" ${current === 'sobre' ? 'aria-current="page"' : ''}>${t('navSobre')}</a>
         </nav>
         <div class="nav-tools">
-          <div id="audio-dock" class="audio-dock" aria-label="Player MP3"></div>
+          <div id="audio-dock" class="audio-dock" aria-label="Player de audio"></div>
           ${montarDropdownIdioma()}
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">MENU</button>
         </div>
@@ -653,4 +653,34 @@ function renderizarPagina() {
   window.AudioPlayer?.init();
 }
 
-renderizarPagina();
+async function carregarDadosRemotos() {
+  try {
+    const [resArtigos, resAlunos] = await Promise.all([
+      fetch('./api/artigos.php', { headers: { Accept: 'application/json' } }),
+      fetch('./api/alunos.php', { headers: { Accept: 'application/json' } }),
+    ]);
+
+    if (resArtigos.ok) {
+      const dados = await resArtigos.json();
+      if (Array.isArray(dados.artigos) && dados.artigos.length) {
+        articles = dados.artigos;
+      }
+      if (Array.isArray(dados.categorias) && dados.categorias.length) {
+        window.SITE_CATEGORIES = dados.categorias;
+      }
+    }
+
+    if (resAlunos.ok) {
+      const dados = await resAlunos.json();
+      if (Array.isArray(dados.alunos) && dados.alunos.length) {
+        students = dados.alunos;
+      }
+    }
+  } catch (_) {
+    // Mantém data/*.js como fallback (Live Server / arquivo local).
+  }
+}
+
+carregarDadosRemotos().finally(() => {
+  renderizarPagina();
+});
