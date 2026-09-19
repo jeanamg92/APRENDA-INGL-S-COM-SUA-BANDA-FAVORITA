@@ -1,0 +1,221 @@
+﻿window.SITE_CATEGORIES = ['TODOS', 'TECNOLOGIA', 'HISTÓRIA', 'MÚSICA', 'APRENDENDO', 'CULTURA'];
+
+window.SITE_ARTICLES = [
+  {
+    id: 'now-and-then-ia',
+    category: 'TECNOLOGIA',
+    tag: 'IA + MÚSICA',
+    accent: 'violet',
+    readTime: '4 min',
+    cover: './assets/covers/cover-now-then-k7.jpg',
+    coverAlt: 'Fita cassete Now and Then dos Beatles',
+    coverCredit: 'Fita cassete Now and Then: uso educativo.',
+    pt: {
+      title: 'Inteligência Artificial e a última canção dos Beatles',
+      dek: 'Como a tecnologia ajudou a recuperar a voz de John Lennon em “Now and Then”, sem criar uma imitação.',
+      paragraphs: [
+        'Em 2023, 43 anos após a morte de John Lennon, os Beatles lançaram “Now and Then”, uma música baseada em uma gravação demo feita pelo cantor no final dos anos 1970. A tecnologia teve um papel importante para tornar esse lançamento possível. Um sistema de inteligência artificial foi usado para separar a voz de Lennon dos outros sons presentes na gravação original, como o piano e os ruídos da fita. Assim, sua voz pôde ser restaurada e utilizada com maior clareza na nova versão da música.',
+        'A inteligência artificial não criou a voz de John Lennon nem fez uma imitação dele. Ela ajudou a recuperar e isolar uma voz que já existia na gravação. Depois, Paul McCartney e Ringo Starr puderam trabalhar com esse material e completar a música, que também utiliza gravações de George Harrison, guitarrista falecido em 2001. “Now and Then” é, portanto, um exemplo de como novas tecnologias podem ajudar a preservar e recuperar materiais produzidos no passado.'
+      ]
+    },
+    en: {
+      title: 'Artificial Intelligence and the Beatles’ Last Song',
+      dek: 'How technology helped recover John Lennon’s voice on “Now and Then” without creating an imitation.',
+      paragraphs: [
+        'In 2023, 43 years after John Lennon’s death, the Beatles released “Now and Then,” a song based on a demo recorded by the singer in the late 1970s. Technology played an important role in making this release possible. An artificial intelligence system was used to separate Lennon’s voice from the other sounds in the original recording, such as the piano and tape noise. This allowed his voice to be restored and used more clearly in the new version of the song.',
+        'Artificial intelligence did not create John Lennon’s voice or imitate him. It helped recover and isolate a voice that was already present in the recording. Paul McCartney and Ringo Starr were then able to work with this material and complete the song, which also includes recordings by George Harrison, the guitarist who died in 2001. “Now and Then” is therefore an example of how new technologies can help preserve and recover material created in the past.'
+      ]
+    },
+    references: [
+      'THE BEATLES. Now And Then: The Last Beatles Song. [S. l.]: Apple Corps, 2023. Disponível em: https://www.thebeatles.com/now-and-then-last-beatles-song. Acesso em: 19 set. 2026.',
+      'THE BEATLES. “Now And Then” Digital. [S. l.]: Apple Corps, 2023. Disponível em: https://www.thebeatles.com. Acesso em: 19 set. 2026.'
+    ]
+  },
+  {
+    id: 'vhs-yellow-submarine',
+    category: 'HISTÓRIA',
+    tag: 'PRESERVAÇÃO',
+    accent: 'yellow',
+    readTime: '4 min',
+    cover: './assets/covers/cover-vhs-ys-real.jpg',
+    coverAlt: 'Caixa amarela e fita VHS de Yellow Submarine dos Beatles',
+    coverCredit: 'Foto da edição VHS de Yellow Submarine: uso educativo.',
+    pt: {
+      title: 'VHS e a preservação de Yellow Submarine',
+      dek: 'Por que guardar uma fita antiga pode significar guardar uma versão da história.',
+      paragraphs: [
+        'Filmes nem sempre permanecem iguais ao longo do tempo. Yellow Submarine, animação dos Beatles lançada em 1968, teve diferentes versões exibidas e distribuídas ao redor do mundo. A edição lançada em VHS em 1987 preservou a versão americana do filme, que possui trechos e animações diferentes daqueles encontrados na versão restaurada posteriormente para DVD e Blu-ray. Por outro lado, essa versão antiga não possuía a sequência de “Hey Bulldog”, recuperada nos lançamentos mais recentes.',
+        'Esse caso mostra a importância das mídias físicas para a preservação cultural. Quando uma nova edição substitui uma versão antiga, algumas cenas podem deixar de estar disponíveis oficialmente, e conteúdos encontrados na internet também podem desaparecer. Uma fita VHS, um DVD ou outro suporte físico pode conservar uma versão específica de uma obra mesmo décadas depois. Assim, guardar mídias antigas não significa apenas colecionar objetos: em alguns casos, significa preservar partes da história que poderiam se perder com as mudanças de formato e de tecnologia.'
+      ]
+    },
+    en: {
+      title: 'VHS and the Preservation of Yellow Submarine',
+      dek: 'Why keeping an old tape can also mean keeping a version of history.',
+      paragraphs: [
+        'Movies do not always remain the same over time. Yellow Submarine, the Beatles’ animated film released in 1968, had different versions shown and distributed around the world. The version released on VHS in 1987 preserved the American cut of the film, which contains scenes and animations that are different from those found in versions later restored for DVD and Blu-ray. On the other hand, this older version did not include the “Hey Bulldog” sequence, which was restored in more recent releases.',
+        'This is a good example of the importance of physical media for cultural preservation. When a new edition replaces an older one, some scenes may no longer be officially available, and content found on the internet can also disappear. A VHS tape, DVD, or other physical format can preserve a specific version of a work for decades. Therefore, keeping old physical media is not only about collecting objects: in some cases, it also means preserving parts of history that could otherwise be lost as formats and technologies change.'
+      ]
+    },
+    references: [
+      'THE BEATLES. Yellow Submarine Feature Film Restored for DVD and Blu-ray. [S. l.]: Apple Corps, 2012. Disponível em: https://www.thebeatles.com. Acesso em: 19 set. 2026.',
+      'MOVIE-CENSORSHIP.COM. Yellow Submarine: International Theatrical Version - UK Original Version. [S. l.], [s. d.]. Disponível em: https://www.movie-censorship.com. Acesso em: 19 set. 2026.'
+    ]
+  },
+  {
+    id: 'letras-literatura',
+    category: 'MÚSICA',
+    tag: 'LITERATURA',
+    accent: 'pink',
+    readTime: '3 min',
+    cover: './assets/covers/cover-mccartney-lyrics.jpg',
+    coverAlt: 'Edição capa dura de The Lyrics, de Paul McCartney',
+    coverCredit: 'Foto do box The Lyrics (Paul McCartney), via Open Library.',
+    pt: {
+      title: 'Letras de música também são literatura',
+      dek: 'O livro de Paul McCartney mostra como uma canção pode ser lida como texto, com metáforas, histórias e emoções.',
+      paragraphs: [
+        'Em 2021, Paul McCartney lançou The Lyrics: 1956 to the Present, um livro que reúne letras de 154 de suas canções, acompanhadas por histórias, lembranças e explicações sobre como elas foram escritas. Ao apresentar as letras dessa forma, o livro mostra que uma canção também pode ser estudada como um texto: ela pode contar histórias, criar personagens, utilizar metáforas, expressar sentimentos e retratar diferentes momentos da sociedade.',
+        'Letras de músicas podem, portanto, possuir grande valor literário e cultural. Canções como “Eleanor Rigby”, “Penny Lane” e “Blackbird” ultrapassaram o entretenimento e passaram a fazer parte da cultura de diferentes gerações. Estudar suas letras também é uma maneira de aprender inglês por meio da literatura, observando vocabulário, expressões, rimas e diferentes formas de utilizar a língua para comunicar ideias e emoções.'
+      ]
+    },
+    en: {
+      title: 'Song Lyrics Are Literature Too',
+      dek: 'Paul McCartney’s book shows how a song can be read as a text, with metaphors, stories, and emotions.',
+      paragraphs: [
+        'In 2021, Paul McCartney published The Lyrics: 1956 to the Present, a book that brings together the lyrics of 154 of his songs, accompanied by stories, memories, and explanations of how they were written. By presenting lyrics this way, the book shows that a song can also be studied as a text: it can tell stories, create characters, use metaphors, express feelings, and portray different moments in society.',
+        'Song lyrics can therefore have great literary and cultural value. Songs such as “Eleanor Rigby,” “Penny Lane,” and “Blackbird” went beyond entertainment and became part of the culture of different generations. Studying their lyrics is also a way of learning English through literature, by observing vocabulary, expressions, rhymes, and different ways of using language to communicate ideas and emotions.'
+      ]
+    },
+    references: [
+      'MCCARTNEY, Paul. The Lyrics: 1956 to the Present. Edited and introduced by Paul Muldoon. New York: Liveright Publishing Corporation, 2021.',
+      'MCCARTNEY, Paul. The Lyrics: 1956 to the Present. PaulMcCartney.com, 2 nov. 2021. Disponível em: https://www.paulmccartney.com. Acesso em: 19 set. 2026.'
+    ]
+  },
+  {
+    id: 'beatles-fenomeno',
+    category: 'CULTURA',
+    tag: 'BEATLEMANIA',
+    accent: 'aqua',
+    readTime: '5 min',
+    cover: './assets/covers/cover-beatles-heads.jpg',
+    coverAlt: 'The Beatles com o submarino amarelo na era Yellow Submarine',
+    coverCredit: 'Foto promocional dos Beatles na era Yellow Submarine: uso educativo.',
+    pt: {
+      title: 'Os Beatles: um fenômeno que rompeu a barreira do idioma',
+      dek: 'Como a Beatlemania atravessou fronteiras: inclusive entre quem não falava inglês.',
+      paragraphs: [
+        'Os Beatles podem ser considerados o primeiro e maior fenômeno global da música popular. Na década de 1960, a Beatlemania transformou quatro jovens de Liverpool em ídolos internacionais. Multidões cercavam aeroportos, hotéis e casas de shows, enquanto milhões de discos eram vendidos em diferentes países. O mais impressionante é que esse fenômeno ultrapassou as fronteiras do mundo de língua inglesa: pessoas que não compreendiam completamente o idioma também compravam os discos, acompanhavam a banda e cantavam suas músicas.',
+        'Os números ajudam a mostrar a dimensão desse sucesso. Reconhecidos pelo Guinness World Records como o grupo musical de maior venda da história, os Beatles alcançaram diferentes países e gerações. Sua presença também acompanhou praticamente toda a evolução das mídias musicais modernas: discos de vinil, fitas, CDs, VHS, DVDs, Blu-rays, downloads digitais e, posteriormente, plataformas de streaming mantiveram sua obra em circulação mesmo décadas após o fim da banda.',
+        'A Beatlemania mostrou como a música poderia atravessar barreiras linguísticas em uma escala até então extraordinária. O sucesso dos Beatles ajudou a ampliar mundialmente o espaço da música em língua inglesa e abriu caminho para outros artistas britânicos conquistarem públicos internacionais. Mais de meio século depois, sua permanência em tantas mídias também demonstra como a tecnologia pode levar uma mesma obra a novas gerações e aproximar pessoas de diferentes idiomas e culturas.'
+      ]
+    },
+    en: {
+      title: 'The Beatles: A Phenomenon That Broke the Language Barrier',
+      dek: 'How Beatlemania crossed borders: even among people who did not speak English.',
+      paragraphs: [
+        'The Beatles can be considered the first and greatest global phenomenon in popular music. In the 1960s, Beatlemania transformed four young men from Liverpool into international idols. Crowds surrounded airports, hotels, and concert venues, while millions of records were sold in different countries. Most impressively, this phenomenon went beyond the English-speaking world: people who did not fully understand the language also bought their records, followed the band, and sang their songs.',
+        'The numbers help demonstrate the scale of their success. Recognized by Guinness World Records as the best-selling music group in history, the Beatles reached different countries and generations. Their presence also followed almost the entire evolution of modern music media: vinyl records, tapes, CDs, VHS, DVDs, Blu-rays, digital downloads, and, later, streaming platforms kept their work in circulation even decades after the band ended.',
+        'Beatlemania showed how music could cross language barriers on an extraordinary scale. The Beatles’ success helped expand the worldwide presence of English-language music and opened the way for other British artists to reach international audiences. More than half a century later, their presence across so many forms of media also demonstrates how technology can bring the same work to new generations and connect people from different languages and cultures.'
+      ]
+    },
+    references: [
+      'GUINNESS WORLD RECORDS. Best-selling group. London: Guinness World Records, 19 mar. 2001. Disponível em: https://www.guinnessworldrecords.com/world-records/best-selling-group. Acesso em: 19 set. 2026.',
+      'GUINNESS WORLD RECORDS. Fastest-selling album. London: Guinness World Records, [s. d.]. Disponível em: https://www.guinnessworldrecords.com/world-records/70125-fastest-selling-album. Acesso em: 19 set. 2026.'
+    ]
+  },
+  {
+    id: 'decifrar-musica',
+    category: 'APRENDENDO',
+    tag: 'ANTES',
+    accent: 'orange',
+    readTime: '4 min',
+    cover: './assets/covers/cover-encarte-real.jpg',
+    coverAlt: 'Encarte aberto de Magical Mystery Tour dos Beatles em português',
+    coverCredit: 'Encarte de Magical Mystery Tour (edição em português): uso educativo.',
+    pt: {
+      title: 'Quando aprender inglês também era decifrar uma música',
+      dek: 'Antes da internet, o encarte e o dicionário eram o kit completo de investigação.',
+      paragraphs: [
+        'Antes da internet, dos aplicativos e das traduções instantâneas, entender uma música em inglês exigia muito mais trabalho. Para quem tinha um disco, fita ou CD com as letras impressas no encarte, aquele pequeno livreto podia se transformar em material de estudo. O ouvinte acompanhava a música lendo a letra, tentava reconhecer o que estava sendo cantado e recorria a um dicionário inglês-português para procurar, palavra por palavra, aquilo que não conhecia.',
+        'Era um processo lento, mas bastante ativo: ouvir, ler, procurar, traduzir, anotar e ouvir novamente. Aos poucos, palavras que antes pareciam apenas sons começavam a fazer sentido, enquanto o estudante aumentava seu vocabulário e percebia como o inglês era pronunciado nas músicas. Hoje, o celular permite encontrar letras, traduções, significados e pronúncias em poucos segundos, mas a ideia continua a mesma: transformar uma música que gostamos de ouvir em uma oportunidade para aprender outro idioma.'
+      ]
+    },
+    en: {
+      title: 'When Learning English Also Meant Deciphering a Song',
+      dek: 'Before the internet, the booklet and the dictionary were the full investigation kit.',
+      paragraphs: [
+        'Before the internet, apps, and instant translations, understanding a song in English required much more work. For those who had a record, cassette, or CD with the lyrics printed in the booklet, that small insert could become a study tool. Listeners would follow the song while reading the lyrics, try to recognize what was being sung, and use an English-Portuguese dictionary to look up unfamiliar words one by one.',
+        'It was a slow but very active process: listening, reading, searching, translating, taking notes, and listening again. Little by little, words that once sounded like meaningless sounds began to make sense, while learners expanded their vocabulary and noticed how English was pronounced in songs. Today, a smartphone can provide lyrics, translations, meanings, and pronunciations in just a few seconds, but the idea remains the same: turning a song we enjoy into an opportunity to learn another language.'
+      ]
+    },
+    references: [
+      'CAMBRIDGE ENGLISH. Aprenda inglês com músicas. Cambridge University Press & Assessment, [s. d.]. Disponível em: https://www.cambridgeenglish.org/br/learning-english/parents-and-children/your-childs-interests/learn-english-through-songs/. Acesso em: 19 set. 2026.',
+      'SOUZA, Ana Guiomar Rêgo; DOURADO, Maura Regina Silva. Letramento musical de professores de língua estrangeira (inglês). Educação em Revista, Belo Horizonte, 2018. Disponível em: https://www.scielo.br. Acesso em: 19 set. 2026.',
+      'MURPHEY, Tim. Music & Song. Oxford: Oxford University Press, 1992.'
+    ]
+  },
+  {
+    id: 'letras-terra',
+    category: 'TECNOLOGIA',
+    tag: 'INTERNET',
+    accent: 'blue',
+    readTime: '4 min',
+    cover: './assets/covers/cover-letras-terra.png',
+    coverAlt: 'Logo verde do site Letras',
+    coverCredit: 'Logo / imagem oficial do Letras (letras.mus.br).',
+    pt: {
+      title: 'Letras.Terra: quando as letras chegaram à internet',
+      dek: 'O site que ajudou uma geração a comparar letra original e tradução enquanto a música tocava.',
+      paragraphs: [
+        'Com a popularização da internet, aprender inglês com música ficou muito mais fácil. No Brasil, um dos sites que marcou essa mudança foi o Letras, criado em 2003 e conhecido durante muitos anos pelo endereço Letras.Terra. Em vez de depender apenas dos encartes dos discos ou procurar cada palavra no dicionário, os usuários passaram a encontrar na internet letras completas de músicas e suas traduções. Outros sites semelhantes também ajudaram a transformar a maneira como as pessoas tinham acesso às letras de músicas estrangeiras.',
+        'Durante principalmente os anos 2000 e 2010, consultar esses sites enquanto uma música tocava no computador, no rádio, em um CD ou em um aparelho de MP3 tornou-se uma maneira simples de descobrir o que os artistas estavam cantando. Era possível comparar a letra original com sua tradução, identificar palavras conhecidas e aprender novas expressões. Atualmente chamado Letras.mus.br, o Letras continua disponível e reúne milhões de letras e traduções. O que antes exigia um encarte e um dicionário passou a estar a poucos cliques de distância, antecipando muitas das facilidades que hoje encontramos diretamente no celular.'
+      ]
+    },
+    en: {
+      title: 'Letras.Terra: When Song Lyrics Came to the Internet',
+      dek: 'The website that helped a generation compare original lyrics and translations while the song played.',
+      paragraphs: [
+        'As the internet became popular, learning English through music became much easier. In Brazil, one of the websites that marked this change was Letras, created in 2003 and known for many years through the Letras.Terra web address. Instead of depending only on album booklets or looking up each word in a dictionary, users could now find complete song lyrics and their translations online. Other similar websites also helped transform the way people accessed the lyrics of songs in foreign languages.',
+        'Especially during the 2000s and 2010s, visiting these websites while listening to music on a computer, radio, CD, or MP3 player became a simple way to discover what artists were singing. Users could compare the original lyrics with their translations, identify familiar words, and learn new expressions. Now called Letras.mus.br, Letras is still available today and contains millions of lyrics and translations. What once required an album booklet and a dictionary became only a few clicks away, anticipating many of the conveniences we now have directly on our smartphones.'
+      ]
+    },
+    references: [
+      'LETRAS. Letras. Belo Horizonte: Studio Sol, [s. d.]. Disponível em: https://www.letras.mus.br/. Acesso em: 19 set. 2026.',
+      'STUDIO SOL COMUNICAÇÃO DIGITAL LTDA. Letras: letras de músicas. Google Play, [s. d.]. Disponível em: https://play.google.com/store/apps/details?id=com.studiosol.player.letras. Acesso em: 19 set. 2026.',
+      'LETRAS. Sobre nós. Belo Horizonte: Studio Sol, [s. d.]. Disponível em: https://letras.gupy.io/. Acesso em: 19 set. 2026.',
+      'CAMBRIDGE ENGLISH. Aprenda inglês com músicas. Cambridge University Press & Assessment, [s. d.]. Disponível em: https://www.cambridgeenglish.org/br/learning-english/parents-and-children/your-childs-interests/learn-english-through-songs/. Acesso em: 19 set. 2026.'
+    ]
+  },
+  {
+    id: 'era-aplicativos',
+    category: 'APRENDENDO',
+    tag: 'AGORA',
+    accent: 'aqua',
+    readTime: '4 min',
+    cover: './assets/covers/cover-android.jpg',
+    coverAlt: 'Celular tocando música em um aplicativo',
+    coverCredit: 'Foto de celular com app de música (Digital Music News): uso educativo.',
+    pt: {
+      title: 'Aprender inglês com música na era dos aplicativos',
+      dek: 'Do encarte ao LingoClip: a ideia continua a mesma, mas o celular mudou o caminho.',
+      paragraphs: [
+        'Hoje, a tecnologia tornou o aprendizado de inglês com música muito mais interativo. Com um celular, é possível ouvir uma canção, acompanhar sua letra, consultar traduções e descobrir o significado de novas palavras em poucos segundos. Plataformas de música, dicionários digitais e aplicativos de idiomas reúnem ferramentas que, no passado, exigiam discos, encartes, livros e dicionários.',
+        'Um exemplo é o LingoClip, anteriormente chamado LyricsTraining, que transforma músicas e videoclipes em atividades de aprendizagem. Enquanto escuta uma música, o estudante pode completar palavras que faltam na letra, escolher entre diferentes respostas ou utilizar o modo karaokê. Dessa forma, é possível praticar a compreensão auditiva, ampliar o vocabulário e observar a pronúncia das palavras dentro de um contexto real. A tecnologia mudou, mas a ideia permanece semelhante àquela dos encartes e dicionários: usar uma música que já gostamos como ponto de partida para aprender um novo idioma.'
+      ]
+    },
+    en: {
+      title: 'Learning English with Music in the Age of Apps',
+      dek: 'From the booklet to LingoClip: the idea stays the same, but the phone changed the path.',
+      paragraphs: [
+        'Today, technology has made learning English through music much more interactive. With a smartphone, it is possible to listen to a song, follow its lyrics, check translations, and discover the meaning of new words in just a few seconds. Music platforms, digital dictionaries, and language-learning apps bring together tools that once required records, booklets, books, and dictionaries.',
+        'One example is LingoClip, formerly known as LyricsTraining, which turns songs and music videos into learning activities. While listening to a song, students can fill in missing words from the lyrics, choose from different answers, or use karaoke mode. In this way, they can practice listening comprehension, expand their vocabulary, and observe how words are pronounced in a real context. Technology has changed, but the idea remains similar to that of booklets and dictionaries: using a song we already enjoy as a starting point for learning a new language.'
+      ]
+    },
+    references: [
+      'LINGOCLIP. Aprenda idiomas com música. Elasthink S.L., [s. d.]. Disponível em: https://pt.lingoclip.com/. Acesso em: 19 set. 2026.',
+      'ELASTHINK S.L. LingoClip: aprenda inglês com músicas. App Store, [s. d.]. Disponível em: https://apps.apple.com/br/app/lingoclip/id1192698323. Acesso em: 19 set. 2026.',
+      'ELASTHINK S.L. LingoClip: learn languages with music. Google Play, [s. d.]. Disponível em: https://play.google.com/store/apps/details?id=com.elasthink.lyricstraining. Acesso em: 19 set. 2026.',
+      'CAMBRIDGE ENGLISH. Aprenda inglês com músicas. Cambridge University Press & Assessment, [s. d.]. Disponível em: https://www.cambridgeenglish.org/br/learning-english/parents-and-children/your-childs-interests/learn-english-through-songs/. Acesso em: 19 set. 2026.'
+    ]
+  }
+];
