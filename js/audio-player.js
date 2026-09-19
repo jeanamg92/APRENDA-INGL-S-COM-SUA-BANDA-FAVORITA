@@ -385,8 +385,9 @@ window.AudioPlayer = (() => {
     const playBtn = card.querySelector('.play-toggle');
     const volume = card.querySelector('#player-volume');
 
-    if (title) title.textContent = e.faixa?.title || 'Sem audio';
-    if (artist) artist.textContent = e.faixa ? 'assets/audio · aleatório' : 'solte .mp3 ou .m4a em assets/audio';
+    if (title) title.textContent = e.faixa?.title || '—';
+    if (artist) artist.textContent = '';
+
     if (current) current.textContent = e.currentLabel;
     if (duration) duration.textContent = e.durationLabel;
     if (progress) progress.style.width = `${e.progress}%`;

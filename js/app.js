@@ -240,7 +240,7 @@ function playerMarkup() {
         <div class="dive-card-top"><span>NOW PLAYING</span><span class="pulse-dot" aria-label="online"></span></div>
         <div class="dive-screen">
           <strong data-player="title">Something</strong>
-          <span data-player="artist">The Beatles / playlist</span>
+          <span data-player="artist" hidden></span>
           <div class="fake-wave" aria-hidden="true"></div>
           <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
           <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
