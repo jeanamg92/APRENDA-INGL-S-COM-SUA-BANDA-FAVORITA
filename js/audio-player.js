@@ -157,7 +157,11 @@ window.AudioPlayer = (() => {
     progress: audio.duration ? (audio.currentTime / audio.duration) * 100 : 0
   });
 
-  const play = () => audio.play().then(() => { salvar(); avisar(); }).catch(() => {});
+  const play = () => {
+    audio.muted = false;
+    if (audio.volume < 0.05) audio.volume = volumeAlvo;
+    return audio.play().then(() => { salvar(); avisar(); }).catch(() => {});
+  };
   const pause = () => {
     cancelarFade();
     audio.pause();
@@ -190,46 +194,93 @@ window.AudioPlayer = (() => {
     }
   };
 
+  const aguardarAudioPronto = () => new Promise((resolve) => {
+    if (audio.readyState >= 2) {
+      resolve();
+      return;
+    }
+    const concluir = () => {
+      audio.removeEventListener('canplay', concluir);
+      audio.removeEventListener('loadeddata', concluir);
+      resolve();
+    };
+    audio.addEventListener('canplay', concluir, { once: true });
+    audio.addEventListener('loadeddata', concluir, { once: true });
+    setTimeout(concluir, 3000);
+  });
+
+  const iniciarFadeVolume = (destino, duracaoMs) => {
+    cancelarFade();
+    const passos = 28;
+    const delta = (destino - audio.volume) / passos;
+    const intervalo = duracaoMs / passos;
+    let n = 0;
+    fadeTimer = setInterval(() => {
+      n += 1;
+      if (audio.paused) {
+        cancelarFade();
+        return;
+      }
+      audio.volume = Math.min(1, Math.max(0, audio.volume + delta));
+      if (n >= passos) {
+        audio.volume = destino;
+        cancelarFade();
+      }
+      salvar();
+      avisar();
+    }, intervalo);
+  };
+
+  const aguardarGestoParaTocar = (de, destino, duracaoMs) => {
+    const liberar = () => {
+      document.removeEventListener('pointerdown', liberar, true);
+      document.removeEventListener('touchstart', liberar, true);
+      document.removeEventListener('keydown', liberar, true);
+      document.removeEventListener('click', liberar, true);
+      tocarComFade({ de, para: destino, duracaoMs });
+    };
+    document.addEventListener('pointerdown', liberar, { once: true, capture: true });
+    document.addEventListener('touchstart', liberar, { once: true, capture: true });
+    document.addEventListener('keydown', liberar, { once: true, capture: true });
+    document.addEventListener('click', liberar, { once: true, capture: true });
+  };
+
   const tocarComFade = ({ de = 0, para = volumeAlvo, duracaoMs = 2000 } = {}) => {
     cancelarFade();
     const destino = Math.min(1, Math.max(0, para));
-    audio.volume = Math.min(1, Math.max(0, de));
-    avisar();
+    audio.playsInline = true;
 
-    const iniciarFade = () => {
-      const passos = 28;
-      const delta = (destino - audio.volume) / passos;
-      const intervalo = duracaoMs / passos;
-      let n = 0;
-      fadeTimer = setInterval(() => {
-        n += 1;
-        if (audio.paused) {
-          cancelarFade();
-          return;
-        }
-        audio.volume = Math.min(1, Math.max(0, audio.volume + delta));
-        if (n >= passos) {
-          audio.volume = destino;
-          cancelarFade();
-        }
+    aguardarAudioPronto().then(async () => {
+      audio.volume = 0;
+      audio.muted = true;
+
+      // 1) Muted autoplay (geralmente liberado pelos navegadores)
+      try {
+        await audio.play();
+        audio.muted = false;
+        audio.volume = Math.min(1, Math.max(0, de));
+        iniciarFadeVolume(destino, duracaoMs);
         salvar();
         avisar();
-      }, intervalo);
-    };
+        return;
+      } catch (_) {
+        audio.muted = false;
+      }
 
-    audio.play().then(() => {
-      iniciarFade();
-      salvar();
+      // 2) Tenta com volume zero sem mute
+      try {
+        audio.volume = 0;
+        await audio.play();
+        iniciarFadeVolume(destino, duracaoMs);
+        salvar();
+        avisar();
+        return;
+      } catch (_) { /* bloqueado */ }
+
+      // 3) Libera no primeiro toque/clique/tecla
+      audio.volume = Math.min(1, Math.max(0, de));
       avisar();
-    }).catch(() => {
-      // Navegadores bloqueiam autoplay com som: libera no primeiro toque/tecla.
-      const liberar = () => {
-        document.removeEventListener('pointerdown', liberar);
-        document.removeEventListener('keydown', liberar);
-        tocarComFade({ de, para: destino, duracaoMs });
-      };
-      document.addEventListener('pointerdown', liberar, { once: true });
-      document.addEventListener('keydown', liberar, { once: true });
+      aguardarGestoParaTocar(de, destino, duracaoMs);
     });
   };
   const seekRatio = (ratio) => {
