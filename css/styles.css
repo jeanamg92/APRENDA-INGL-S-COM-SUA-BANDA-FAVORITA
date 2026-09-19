@@ -1,4 +1,4 @@
-
+﻿
 :root {
   --ink: #101936;
   --ink-soft: #3e4c6d;
@@ -1314,7 +1314,7 @@ body { padding-top: 0 !important; }
 .hero-flip-back { transform: rotateY(180deg); }
 .hero-cover { cursor: pointer; transition: transform .3s var(--ease), filter .3s var(--ease); }
 .hero-cover.is-revealed { animation: yellow-reveal .7s cubic-bezier(.2,.8,.2,1) both; }
-.hero-cover.is-revealed img { content: url('./assets/yellow-easter-egg.jpg'); }
+.hero-cover.is-revealed img { content: url('/assets/yellow-easter-egg.jpg'); }
 @keyframes yellow-reveal { 0% { transform: rotate(-8deg) scale(.95); filter: brightness(1.4) saturate(1.5); } 55% { transform: rotate(3deg) scale(1.08); filter: brightness(1.2) saturate(1.4); } 100% { transform: rotate(-8deg) scale(1); filter: none; } }
 @media (max-width: 620px) {
   .album-page { grid-template-columns: minmax(0, 1fr); }
@@ -1331,7 +1331,7 @@ body { padding-top: 0 !important; }
 
 /* --- Yellow Submarine easter egg visibility --- */
 .hero-cover:hover, .hero-cover:focus-visible, .hero-cover.is-revealed { z-index: 7; }
-.hero-cover.is-revealed img { content: url('./assets/yellow-easter-egg.jpg'); }
+.hero-cover.is-revealed img { content: url('/assets/yellow-easter-egg.jpg'); }
 
 
 /* Keep the interactive archive photo above the player on hover */

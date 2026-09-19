@@ -426,6 +426,11 @@ function bindHomeInteractions() {
     window.clearTimeout(yellowTimer);
     if (yellowClicks === 3) {
       yellowCover.classList.add('is-revealed');
+      const img = yellowCover.querySelector('img');
+      if (img) {
+        img.src = '/assets/yellow-easter-egg.jpg';
+        img.alt = 'Imagem secreta do easter egg Yellow Submarine';
+      }
       yellowCover.setAttribute('aria-label', 'Imagem secreta revelada');
       yellowClicks = 0;
     } else {
