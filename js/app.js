@@ -229,11 +229,10 @@ function playerMarkup() {
   return `
     <div class="hero-stage" aria-label="${escapeHTML(t('playerAria'))}">
       <span class="hero-sticker hero-sticker-top hero-sticker-shine" id="issue-sticker" role="button" tabindex="0" aria-label="${escapeHTML(t('stickerAria'))}">ISSUE 01 / 1967→2000</span>
-      <figure class="hero-photo-frame">
-        <img src="./assets/beatles-1967.jpg" alt="The Beatles em uma fotografia promocional de 1967" />
-        <figcaption>REAL ARCHIVE / 1967</figcaption>
+      <figure class="hero-photo-frame" id="hero-beatles-photo" tabindex="0" role="button" aria-label="Virar a fotografia dos Beatles">
+        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="./assets/beatles-1967.jpg" alt="The Beatles em uma fotografia promocional de 1967" /><figcaption>REAL ARCHIVE / 1967</figcaption></div><div class="hero-flip-face hero-flip-back"><img src="./assets/beatles-flip.jpg" alt="Fotografia alternativa dos Beatles" /><figcaption>FLIP SIDE / ARCHIVE</figcaption></div></div>
       </figure>
-      <figure class="hero-cover">
+      <figure class="hero-cover" id="hero-yellow-cover" tabindex="0" role="button" aria-label="Capa de Yellow Submarine; clique três vezes para revelar uma imagem">
         <img src="./assets/yellow-submarine-album.jpg" alt="Ilustração psicodélica da capa de Yellow Submarine" />
         <figcaption>YELLOW SUBMARINE / 1969</figcaption>
       </figure>
@@ -261,6 +260,38 @@ function renderHome() {
   const steps = t('steps');
   const timelineItems = t('timelineItems');
   const guideSteps = t('guideSteps');
+  const albums = [
+    ['Please Please Me', '1963', 'please-please-me.jpg', 'A estreia tem urgência de palco: frases curtas, refrões fortes e o começo de uma escuta coletiva.'],
+    ['With the Beatles', '1963', 'with-the-beatles.jpg', 'O segundo disco confirma a energia da banda e mostra como repetição e resposta criam vocabulário musical.'],
+    ["A Hard Day's Night", '1964', 'a-hard-days-night.jpg', 'Uma trilha quase toda autoral: ótima para perceber como uma expressão cotidiana pode virar título e refrão.'],
+    ['Beatles for Sale', '1964', 'beatles-for-sale.jpg', 'Entre cansaço e melodia, o disco abre espaço para letras mais confessionais e nuances de voz.'],
+    ['Help!', '1965', 'help.jpg', 'Uma palavra simples carrega um pedido complexo: contexto e entonação mudam o que ouvimos.'],
+    ['Rubber Soul', '1965', 'rubber-soul.jpg', 'A linguagem fica mais reflexiva, com imagens, trocadilhos e canções que pedem uma segunda escuta.'],
+    ['Revolver', '1966', 'revolver.webp', 'Desenho, fotografia e camadas de som: uma capa que já avisa que a escuta será experimental.'],
+    ["Sgt. Pepper’s Lonely Hearts Club Band", '1967', 'sgt-peppers-lonely-hearts.jpg', 'A capa como colagem: personagens, cores e uma banda inventada para mudar a ideia de álbum.'],
+    ['Magical Mystery Tour', '1967', 'magical-mystery-tour.jpg', 'Cor, fantasia e palavras estranhas: um convite para ouvir sem tentar traduzir tudo de primeira.'],
+    ['The Beatles (White Album)', '1968', 'the-beatles-white-album.jpg', 'Quase sem imagem, a capa faz o silêncio virar escolha — e deixa as músicas ocuparem o espaço.'],
+    ['Yellow Submarine', '1969', 'yellow-submarine.jpg', 'Animação, personagens e nonsense: uma oportunidade para investigar palavras que não querem ser literais.'],
+    ['Abbey Road', '1969', 'abbey-road.jpg', 'Uma travessia simples que virou imagem universal — e uma porta para falar de sequência, ritmo e memória.'],
+    ['Let It Be', '1970', 'let-it-be.jpg', 'O último lançamento de estúdio transforma uma frase de consolo em convite para escutar com calma.']
+  ];
+  const albumNotesEn = [
+    'The debut has stage urgency: short phrases, strong choruses and the beginning of a shared listening experience.',
+    'The second record confirms the band’s energy and shows how repetition and response create a musical vocabulary.',
+    'An almost entirely self-written soundtrack: perfect for noticing how an everyday expression can become a title and chorus.',
+    'Between fatigue and melody, the record makes room for more confessional lyrics and shades of voice.',
+    'A simple word carries a complex request: context and intonation change what we hear.',
+    'The language becomes more reflective, with images, wordplay and songs that ask for a second listen.',
+    'Drawing, photography and layers of sound: a cover that already signals an experimental listening experience.',
+    'The cover as collage: characters, colours and an invented band that changed the idea of an album.',
+    'Colour, fantasy and strange words: an invitation to listen without trying to translate everything at once.',
+    'Almost image-free, the cover turns silence into a choice and lets the songs occupy the space.',
+    'Animation, characters and nonsense: a chance to investigate words that do not want to be taken literally.',
+    'A simple crossing that became a universal image — and a way to talk about sequence, rhythm and memory.',
+    'The final studio release turns a phrase of comfort into an invitation to listen calmly.'
+  ];
+  const albumOrder = albums.map((album, index) => ({ album, noteEn: albumNotesEn[index] })).reverse();
+  const albumPageMarkup = albumOrder.map(({ album, noteEn }, index) => `<article class="album-page ${index === 0 ? 'active' : ''}" data-album-page="${index}"><div class="album-card"><div class="album-cover"><img src="./assets/covers/${album[2]}" alt="Capa do álbum ${album[0]}" loading="lazy" /></div><div class="album-card-copy"><span>${album[1]}</span><h3>${album[0]}</h3><p>${idiomaSite === 'en' ? noteEn : album[3]}</p></div></div></article>`).join('');
   root.innerHTML = `
     <section class="hero" aria-labelledby="hero-title">
       <div class="container hero-content">
@@ -291,7 +322,9 @@ function renderHome() {
 
     <section class="section" id="alunos-preview"><div class="container"><div class="section-heading reveal"><div class="eyebrow">${t('alunosEyebrow')}</div><h2 class="display">${t('alunosTitle')}</h2><p>${t('alunosLead')}</p></div><div class="student-grid">${students.map(studentCard).join('')}</div><div style="text-align:center;margin-top:28px;"><a class="button ghost" href="./alunos.html">${t('alunosTodos')} <span aria-hidden="true">→</span></a></div></div></section>
 
-    <section class="section dark-section" id="timeline"><div class="container"><div class="section-heading reveal"><div class="eyebrow">${t('timelineEyebrow')}</div><h2 class="display">${t('timelineTitle')}</h2><p>${t('timelineLead')}</p></div><div class="timeline-wrap"><div class="timeline">${timelineItems.map(([year, title, text]) => `<article class="timeline-item reveal" tabindex="0"><div class="timeline-dot"></div><div class="timeline-card"><strong>${year}</strong><h3>${title}</h3><p>${text}</p></div></article>`).join('')}</div></div><div class="timeline-note" id="timeline-detail">${t('timelineHint')}</div><div class="ai-cta reveal"><div class="eyebrow">${t('aiEyebrow')}</div><p>${t('aiLead')}</p><div class="ai-compare"><article><h3>${t('aiEvite')}</h3><p>${t('aiEviteEx')}</p></article><article><h3>${t('aiPrefira')}</h3><p>${t('aiPrefiraEx')}</p></article></div></div></div></section>
+    <section class="section dark-section" id="timeline"><div class="container"><div class="section-heading reveal"><div class="eyebrow">${t('timelineEyebrow')}</div><h2 class="display">${t('timelineTitle')}</h2><p>${t('timelineLead')}</p></div><div class="timeline-wrap"><div class="timeline">${timelineItems.map(([year, title, text]) => `<article class="timeline-item reveal" tabindex="0"><div class="timeline-dot"></div><div class="timeline-card"><strong>${year}</strong><h3>${title}</h3><p>${text}</p></div></article>`).join('')}</div></div><div class="ai-cta reveal"><div class="eyebrow">${t('aiEyebrow')}</div><p>${t('aiLead')}</p><div class="ai-compare"><article><h3>${t('aiEvite')}</h3><p>${t('aiEviteEx')}</p></article><article><h3>${t('aiPrefira')}</h3><p>${t('aiPrefiraEx')}</p></article></div></div></div></section>
+
+    <section class="section album-carousel-section" id="discografia"><div class="container"><div class="album-carousel-heading reveal"><div><div class="eyebrow">Discografia de estúdio / 1970—1963</div><h2 class="display">Uma capa também ensina a escutar.</h2></div><p>Uma capa por vez: volte no tempo e observe como imagem, som e linguagem se encontram.</p></div><div class="album-carousel reveal"><div class="album-pages">${albumPageMarkup}</div><div class="album-carousel-controls"><button type="button" class="album-arrow" data-album-prev aria-label="Álbum anterior">←</button><span class="album-counter" aria-live="polite"><b data-album-current>01</b> / ${String(albumOrder.length).padStart(2, '0')}</span><button type="button" class="album-arrow" data-album-next aria-label="Próximo álbum">→</button></div></div></div></section>
 
     <section class="section"><div class="container history-grid"><div class="history-visual reveal"><img src="./assets/beatles-psychic.jpeg" alt="Ilustração psicodélica colorida dos quatro Beatles" /></div><div class="history-copy reveal"><div class="eyebrow">${t('historyEyebrow')}</div><h2 class="display">${t('historyTitle')}</h2><p>${t('historyP1')}</p><p>${t('historyP2')}</p><div class="history-facts"><span>${t('historyFact1')}</span><span>${t('historyFact2')}</span><span>${t('historyFact3')}</span></div></div></div></section>
 
@@ -378,15 +411,46 @@ function bindIssueSticker() {
 
 function bindHomeInteractions() {
   bindIssueSticker();
+  const heroPhoto = document.querySelector('#hero-beatles-photo');
+  const flipPhoto = () => heroPhoto?.classList.toggle('is-flipped');
+  heroPhoto?.addEventListener('click', flipPhoto);
+  heroPhoto?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flipPhoto(); }
+  });
+  const yellowCover = document.querySelector('#hero-yellow-cover');
+  let yellowClicks = 0;
+  let yellowTimer;
+  const clickYellow = () => {
+    if (yellowCover?.classList.contains('is-revealed')) return;
+    yellowClicks += 1;
+    window.clearTimeout(yellowTimer);
+    if (yellowClicks === 3) {
+      yellowCover.classList.add('is-revealed');
+      yellowCover.setAttribute('aria-label', 'Imagem secreta revelada');
+      yellowClicks = 0;
+    } else {
+      yellowTimer = window.setTimeout(() => { yellowClicks = 0; }, 950);
+    }
+  };
+  yellowCover?.addEventListener('click', clickYellow);
+  yellowCover?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); clickYellow(); }
+  });
+  const albumPages = [...document.querySelectorAll('[data-album-page]')];
+  const albumCurrent = document.querySelector('[data-album-current]');
+  let albumIndex = 0;
+  const showAlbumPage = (nextIndex) => {
+    if (!albumPages.length) return;
+    albumIndex = (nextIndex + albumPages.length) % albumPages.length;
+    albumPages.forEach((page, index) => page.classList.toggle('active', index === albumIndex));
+    if (albumCurrent) albumCurrent.textContent = String(albumIndex + 1).padStart(2, '0');
+  };
+  document.querySelector('[data-album-prev]')?.addEventListener('click', () => showAlbumPage(albumIndex - 1));
+  document.querySelector('[data-album-next]')?.addEventListener('click', () => showAlbumPage(albumIndex + 1));
   document.querySelectorAll('.timeline-item').forEach((item) => {
     const activate = () => {
       document.querySelectorAll('.timeline-item').forEach((other) => other.classList.remove('active'));
       item.classList.add('active');
-      const year = item.querySelector('strong')?.textContent;
-      const detail = item.querySelector('p')?.textContent;
-      const title = item.querySelector('h3')?.textContent;
-      const target = document.querySelector('#timeline-detail');
-      if (target) target.innerHTML = `<strong>${year} / ${title}</strong><br>${detail}`;
     };
     item.addEventListener('click', activate);
     item.addEventListener('keydown', (event) => {
