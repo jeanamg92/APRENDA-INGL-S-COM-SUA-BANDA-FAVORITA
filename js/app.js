@@ -244,11 +244,11 @@ function playerMarkup() {
           <div class="fake-wave" aria-hidden="true"></div>
           <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
           <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
-          <div class="player-actions">
-            <button class="button alt player-btn" type="button" data-player="prev" aria-label="Faixa anterior">‹</button>
-            <button class="button alt play-toggle" type="button" aria-pressed="false"><span aria-hidden="true">▶</span> <span>PLAY</span></button>
-            <button class="button alt player-btn" type="button" data-player="next" aria-label="Próxima faixa">›</button>
-            <label class="player-vol" for="player-volume"><span aria-hidden="true">VOL</span><input id="player-volume" type="range" min="0" max="100" value="72" aria-label="${escapeHTML(t('volumeAria'))}"></label>
+          <div class="dive-player-bar" role="group" aria-label="Controles da playlist">
+            <button class="dive-player-btn" type="button" data-player="prev" aria-label="Faixa anterior">‹</button>
+            <button class="dive-player-btn dive-player-play play-toggle" type="button" aria-pressed="false"><span aria-hidden="true">▶</span><span>PLAY</span></button>
+            <button class="dive-player-btn" type="button" data-player="next" aria-label="Próxima faixa">›</button>
+            <label class="dive-player-vol" for="player-volume"><span aria-hidden="true">VOL</span><input id="player-volume" type="range" min="0" max="100" value="72" aria-label="${escapeHTML(t('volumeAria'))}"></label>
           </div>
         </div>
       </div>
