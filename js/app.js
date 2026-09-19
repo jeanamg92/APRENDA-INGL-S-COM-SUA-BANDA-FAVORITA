@@ -229,11 +229,11 @@ function playerMarkup() {
   return `
     <div class="hero-stage" aria-label="${escapeHTML(t('playerAria'))}">
       <span class="hero-sticker hero-sticker-top hero-sticker-shine" id="issue-sticker" role="button" tabindex="0" aria-label="${escapeHTML(t('stickerAria'))}">ISSUE 01 / 1967→2000</span>
-      <figure class="hero-photo-frame" id="hero-beatles-photo" tabindex="0" role="button" aria-label="Virar a fotografia dos Beatles">
-        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="./assets/beatles-1967.jpg" alt="The Beatles em uma fotografia promocional de 1967" /><figcaption>REAL ARCHIVE / 1967</figcaption></div><div class="hero-flip-face hero-flip-back"><img src="./assets/beatles-flip.jpg" alt="Fotografia alternativa dos Beatles" /><figcaption>FLIP SIDE / ARCHIVE</figcaption></div></div>
+      <figure class="hero-photo-frame" id="hero-beatles-photo" tabindex="0" role="button" aria-label="${escapeHTML(t('photoFlipAria'))}">
+        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="./assets/beatles-1967.jpg" alt="${escapeHTML(t('beatlesPhotoAlt'))}" /><figcaption>REAL ARCHIVE / 1967</figcaption></div><div class="hero-flip-face hero-flip-back"><img src="./assets/beatles-flip.jpg" alt="${escapeHTML(t('beatlesFlipAlt'))}" /><figcaption>FLIP SIDE / ARCHIVE</figcaption></div></div>
       </figure>
-      <figure class="hero-cover" id="hero-yellow-cover" tabindex="0" role="button" aria-label="Capa de Yellow Submarine; clique três vezes para revelar uma imagem">
-        <img src="./assets/yellow-submarine-album.jpg" alt="Ilustração psicodélica da capa de Yellow Submarine" />
+      <figure class="hero-cover" id="hero-yellow-cover" tabindex="0" role="button" aria-label="${escapeHTML(t('yellowCoverAria'))}">
+        <img src="./assets/yellow-submarine-album.jpg" alt="${escapeHTML(t('yellowCoverAlt'))}" />
         <figcaption>YELLOW SUBMARINE / 1969</figcaption>
       </figure>
       <div class="dive-card" aria-label="Player da playlist do site">
@@ -245,9 +245,9 @@ function playerMarkup() {
           <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
           <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
           <div class="dive-player-bar" role="group" aria-label="Controles da playlist">
-            <button class="dive-player-btn" type="button" data-player="prev" aria-label="Faixa anterior">‹</button>
+            <button class="dive-player-btn" type="button" data-player="prev" aria-label="${escapeHTML(t('faixaAnterior'))}">‹</button>
             <button class="dive-player-btn dive-player-play play-toggle" type="button" aria-pressed="false"><span aria-hidden="true">▶</span><span>PLAY</span></button>
-            <button class="dive-player-btn" type="button" data-player="next" aria-label="Próxima faixa">›</button>
+            <button class="dive-player-btn" type="button" data-player="next" aria-label="${escapeHTML(t('faixaProxima'))}">›</button>
             <label class="dive-player-vol" for="player-volume"><span aria-hidden="true">VOL</span><input id="player-volume" type="range" min="0" max="100" value="72" aria-label="${escapeHTML(t('volumeAria'))}"></label>
           </div>
         </div>
@@ -291,7 +291,7 @@ function renderHome() {
     'The final studio release turns a phrase of comfort into an invitation to listen calmly.'
   ];
   const albumOrder = albums.map((album, index) => ({ album, noteEn: albumNotesEn[index] })).reverse();
-  const albumPageMarkup = albumOrder.map(({ album, noteEn }, index) => `<article class="album-page ${index === 0 ? 'active' : ''}" data-album-page="${index}"><div class="album-card"><div class="album-cover"><img src="./assets/covers/${album[2]}" alt="Capa do álbum ${album[0]}" loading="lazy" /></div><div class="album-card-copy"><span>${album[1]}</span><h3>${album[0]}</h3><p>${idiomaSite === 'en' ? noteEn : album[3]}</p></div></div></article>`).join('');
+  const albumPageMarkup = albumOrder.map(({ album, noteEn }, index) => `<article class="album-page ${index === 0 ? 'active' : ''}" data-album-page="${index}"><div class="album-card"><div class="album-cover"><img src="./assets/covers/${album[2]}" alt="${escapeHTML(tf('albumCoverAlt', { title: album[0] }))}" loading="lazy" /></div><div class="album-card-copy"><span>${album[1]}</span><h3>${album[0]}</h3><p>${idiomaSite === 'en' ? noteEn : album[3]}</p></div></div></article>`).join('');
   root.innerHTML = `
     <section class="hero" aria-labelledby="hero-title">
       <div class="container hero-content">
@@ -324,9 +324,9 @@ function renderHome() {
 
     <section class="section dark-section" id="timeline"><div class="container"><div class="section-heading reveal"><div class="eyebrow">${t('timelineEyebrow')}</div><h2 class="display">${t('timelineTitle')}</h2><p>${t('timelineLead')}</p></div><div class="timeline-wrap"><div class="timeline">${timelineItems.map(([year, title, text]) => `<article class="timeline-item reveal" tabindex="0"><div class="timeline-dot"></div><div class="timeline-card"><strong>${year}</strong><h3>${title}</h3><p>${text}</p></div></article>`).join('')}</div></div><div class="ai-cta reveal"><div class="eyebrow">${t('aiEyebrow')}</div><p>${t('aiLead')}</p><div class="ai-compare"><article><h3>${t('aiEvite')}</h3><p>${t('aiEviteEx')}</p></article><article><h3>${t('aiPrefira')}</h3><p>${t('aiPrefiraEx')}</p></article></div></div></div></section>
 
-    <section class="section album-carousel-section" id="discografia"><div class="container"><div class="album-carousel-heading reveal"><div><div class="eyebrow">Discografia de estúdio / 1970—1963</div><h2 class="display">Uma capa também ensina a escutar.</h2></div><p>Uma capa por vez: volte no tempo e observe como imagem, som e linguagem se encontram.</p></div><div class="album-carousel reveal"><div class="album-pages">${albumPageMarkup}</div><div class="album-carousel-controls"><button type="button" class="album-arrow" data-album-prev aria-label="Álbum anterior">←</button><span class="album-counter" aria-live="polite"><b data-album-current>01</b> / ${String(albumOrder.length).padStart(2, '0')}</span><button type="button" class="album-arrow" data-album-next aria-label="Próximo álbum">→</button></div></div></div></section>
+    <section class="section album-carousel-section" id="discografia"><div class="container"><div class="album-carousel-heading reveal"><div><div class="eyebrow">${t('albumEyebrow')}</div><h2 class="display">${t('albumTitle')}</h2></div><p>${t('albumLead')}</p></div><div class="album-carousel reveal"><div class="album-pages">${albumPageMarkup}</div><div class="album-carousel-controls"><button type="button" class="album-arrow" data-album-prev aria-label="${escapeHTML(t('albumPrevAria'))}">←</button><span class="album-counter" aria-live="polite"><b data-album-current>01</b> / ${String(albumOrder.length).padStart(2, '0')}</span><button type="button" class="album-arrow" data-album-next aria-label="${escapeHTML(t('albumNextAria'))}">→</button></div></div></div></section>
 
-    <section class="section"><div class="container history-grid"><div class="history-visual reveal"><img src="./assets/beatles-psychic.jpeg" alt="Ilustração psicodélica colorida dos quatro Beatles" /></div><div class="history-copy reveal"><div class="eyebrow">${t('historyEyebrow')}</div><h2 class="display">${t('historyTitle')}</h2><p>${t('historyP1')}</p><p>${t('historyP2')}</p><div class="history-facts"><span>${t('historyFact1')}</span><span>${t('historyFact2')}</span><span>${t('historyFact3')}</span></div></div></div></section>
+    <section class="section"><div class="container history-grid"><div class="history-visual reveal"><img src="./assets/beatles-psychic.jpeg" alt="${escapeHTML(t('historyImgAlt'))}" /></div><div class="history-copy reveal"><div class="eyebrow">${t('historyEyebrow')}</div><h2 class="display">${t('historyTitle')}</h2><p>${t('historyP1')}</p><p>${t('historyP2')}</p><div class="history-facts"><span>${t('historyFact1')}</span><span>${t('historyFact2')}</span><span>${t('historyFact3')}</span></div></div></div></section>
 
     <section class="section guide-home" id="guia-de-escuta"><div class="container"><div class="guide-home-heading"><div><div class="eyebrow">${t('guideEyebrow')}</div><h2 class="display">${t('guideTitle')}</h2></div><p>${t('guideLead')}</p></div><div class="guide-home-grid">${guideSteps.map(([n, title, d]) => `<article><b>${n}</b><h3>${title}</h3><p>${d}</p></article>`).join('')}</div><a class="button ghost" href="#desafio">${t('guideCta')} <span aria-hidden="true">↓</span></a></div></section>
 
@@ -429,9 +429,9 @@ function bindHomeInteractions() {
       const img = yellowCover.querySelector('img');
       if (img) {
         img.src = '/assets/yellow-easter-egg.jpg';
-        img.alt = 'Imagem secreta do easter egg Yellow Submarine';
+        img.alt = t('yellowRevealedAlt');
       }
-      yellowCover.setAttribute('aria-label', 'Imagem secreta revelada');
+      yellowCover.setAttribute('aria-label', t('yellowRevealedAria'));
       yellowClicks = 0;
     } else {
       yellowTimer = window.setTimeout(() => { yellowClicks = 0; }, 950);
@@ -621,7 +621,7 @@ function renderStudent() {
 }
 
 function renderAbout() {
-  root.innerHTML = `<section class="page-hero"><div class="container"><div class="eyebrow">${t('sobreEyebrow')}</div><h1 class="display">${t('sobreTitle')}</h1><p>${t('sobreLead')}</p></div></section><section class="section"><div class="container about-grid"><article class="about-card dark reveal"><div class="eyebrow" style="color:var(--aqua)">${t('sobreDeOnde')}</div><h2>${t('sobreOuvir')}</h2><p>${t('sobreP1')}</p><p>${t('sobreP2')}</p></article><article class="about-card reveal"><div class="eyebrow">${t('sobreId')}</div><h2>${t('sobreFan')}</h2><p>${t('sobreIdP')}</p><div class="principles"><div class="principle">MÚSICA</div><div class="principle">INGLÊS</div><div class="principle">TECNOLOGIA</div><div class="principle">DESCOBERTA</div></div></article></div></section><section class="section-tight"><div class="container"><div class="section-heading reveal"><div class="eyebrow">${t('sobreFica')}</div><h2 class="display">${t('sobreFicaTitle')}</h2></div><a class="button" href="./index.html#como-funciona">${t('sobreFicaCta')} <span aria-hidden="true">→</span></a></div></section>`;
+  root.innerHTML = `<section class="page-hero"><div class="container"><div class="eyebrow">${t('sobreEyebrow')}</div><h1 class="display">${t('sobreTitle')}</h1><p>${t('sobreLead')}</p></div></section><section class="section"><div class="container about-grid"><article class="about-card dark reveal"><div class="eyebrow" style="color:var(--aqua)">${t('sobreDeOnde')}</div><h2>${t('sobreOuvir')}</h2><p>${t('sobreP1')}</p><p>${t('sobreP2')}</p></article><article class="about-card reveal"><div class="eyebrow">${t('sobreId')}</div><h2>${t('sobreFan')}</h2><p>${t('sobreIdP')}</p><div class="principles"><div class="principle">${t('principleMusica')}</div><div class="principle">${t('principleIngles')}</div><div class="principle">${t('principleTech')}</div><div class="principle">${t('principleDescoberta')}</div></div></article></div></section><section class="section-tight"><div class="container"><div class="section-heading reveal"><div class="eyebrow">${t('sobreFica')}</div><h2 class="display">${t('sobreFicaTitle')}</h2></div><a class="button" href="./index.html#como-funciona">${t('sobreFicaCta')} <span aria-hidden="true">→</span></a></div></section>`;
 }
 
 function setupSoundAndReveals() {
