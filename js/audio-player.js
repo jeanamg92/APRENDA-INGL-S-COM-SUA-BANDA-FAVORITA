@@ -444,7 +444,15 @@ window.AudioPlayer = (() => {
     const idx = Number.isInteger(salvo?.index) ? Math.min(salvo.index, Math.max(playlist.length - 1, 0)) : 0;
     const time = Number(salvo?.time) || 0;
     carregarFaixa(idx, { autoplay: false, time });
-    tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: 2200 });
+
+    // So toca sozinho na 1a visita ou se ja estava tocando. Se o usuario pausou, respeita.
+    const deveAutoplay = !salvo || salvo.playing === true;
+    if (deveAutoplay) {
+      tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: 2200 });
+    } else {
+      audio.volume = volumeAlvo;
+      avisar();
+    }
   };
 
   const init = () => {
