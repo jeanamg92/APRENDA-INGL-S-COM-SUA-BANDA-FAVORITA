@@ -412,35 +412,56 @@ function bindIssueSticker() {
 function bindHomeInteractions() {
   bindIssueSticker();
   const heroPhoto = document.querySelector('#hero-beatles-photo');
-  const flipPhoto = () => heroPhoto?.classList.toggle('is-flipped');
-  heroPhoto?.addEventListener('click', flipPhoto);
-  heroPhoto?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flipPhoto(); }
-  });
-  const yellowCover = document.querySelector('#hero-yellow-cover');
-  let yellowClicks = 0;
-  let yellowTimer;
-  const clickYellow = () => {
-    if (yellowCover?.classList.contains('is-revealed')) return;
-    yellowClicks += 1;
-    window.clearTimeout(yellowTimer);
-    if (yellowClicks === 3) {
-      yellowCover.classList.add('is-revealed');
-      const img = yellowCover.querySelector('img');
-      if (img) {
-        img.src = '/assets/yellow-easter-egg.jpg';
-        img.alt = t('yellowRevealedAlt');
+  if (heroPhoto && heroPhoto.dataset.bound !== 'true') {
+    heroPhoto.dataset.bound = 'true';
+    let flipsFoto = 0;
+    let flipTimer;
+    let revolutionTocada = false;
+    const flipPhoto = () => {
+      heroPhoto.classList.toggle('is-flipped');
+      if (revolutionTocada) return;
+      flipsFoto += 1;
+      window.clearTimeout(flipTimer);
+      if (flipsFoto >= 9) {
+        flipsFoto = 0;
+        revolutionTocada = true;
+        window.AudioPlayer?.tocarPorNome?.('Revolution 9.mp3');
+      } else {
+        flipTimer = window.setTimeout(() => { flipsFoto = 0; }, 7000);
       }
-      yellowCover.setAttribute('aria-label', t('yellowRevealedAria'));
-      yellowClicks = 0;
-    } else {
-      yellowTimer = window.setTimeout(() => { yellowClicks = 0; }, 950);
-    }
-  };
-  yellowCover?.addEventListener('click', clickYellow);
-  yellowCover?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); clickYellow(); }
-  });
+    };
+    heroPhoto.addEventListener('click', flipPhoto);
+    heroPhoto.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flipPhoto(); }
+    });
+  }
+  const yellowCover = document.querySelector('#hero-yellow-cover');
+  if (yellowCover && yellowCover.dataset.bound !== 'true') {
+    yellowCover.dataset.bound = 'true';
+    let yellowClicks = 0;
+    let yellowTimer;
+    const clickYellow = () => {
+      if (yellowCover.classList.contains('is-revealed')) return;
+      yellowClicks += 1;
+      window.clearTimeout(yellowTimer);
+      if (yellowClicks === 3) {
+        yellowCover.classList.add('is-revealed');
+        const img = yellowCover.querySelector('img');
+        if (img) {
+          img.src = '/assets/yellow-easter-egg.jpg';
+          img.alt = t('yellowRevealedAlt');
+        }
+        yellowCover.setAttribute('aria-label', t('yellowRevealedAria'));
+        yellowClicks = 0;
+      } else {
+        yellowTimer = window.setTimeout(() => { yellowClicks = 0; }, 950);
+      }
+    };
+    yellowCover.addEventListener('click', clickYellow);
+    yellowCover.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); clickYellow(); }
+    });
+  }
   const albumPages = [...document.querySelectorAll('[data-album-page]')];
   const albumCurrent = document.querySelector('[data-album-current]');
   let albumIndex = 0;

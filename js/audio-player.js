@@ -471,6 +471,28 @@ window.AudioPlayer = (() => {
     }
   };
 
+  const tocarPorNome = (nomeArquivo) => {
+    const arquivo = String(nomeArquivo || '').split('/').pop();
+    if (!arquivo || !EXTENSAO_AUDIO.test(arquivo)) return;
+
+    let idx = playlist.findIndex((faixa) => faixa.id === arquivo);
+    if (idx < 0) {
+      playlist = [
+        ...playlist,
+        {
+          id: arquivo,
+          title: tituloDeArquivo(arquivo),
+          artist: 'Easter egg',
+          src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`
+        }
+      ];
+      idx = playlist.length - 1;
+    }
+
+    carregarFaixa(idx, { autoplay: false, time: 0 });
+    tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: 1400 });
+  };
+
   return {
     init,
     play,
@@ -483,6 +505,7 @@ window.AudioPlayer = (() => {
     on,
     estado,
     ligarHero,
+    tocarPorNome,
     get playlist() { return playlist; }
   };
 })();
