@@ -1380,9 +1380,17 @@ body { padding-top: 0 !important; }
   font-size: 11px;
   letter-spacing: 0.06em;
 }
-.dive-player-btn:hover,
+.dive-player-btn:hover {
+  background: #ffe66a;
+  color: var(--ink);
+}
+.dive-player-btn:active {
+  background: var(--pink);
+  color: var(--paper);
+}
 .dive-player-btn[aria-pressed="true"] {
-  background: var(--aqua);
+  background: var(--pink);
+  color: var(--yellow);
 }
 .dive-player-vol {
   display: flex;
