@@ -244,11 +244,11 @@ function playerMarkup() {
           <div class="fake-wave" aria-hidden="true"></div>
           <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
           <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
-          <div class="hero-actions player-actions" style="margin-top: 15px; gap: 10px;">
-            <button class="button alt" type="button" data-player="prev" aria-label="Faixa anterior">‹</button>
+          <div class="player-actions">
+            <button class="button alt player-btn" type="button" data-player="prev" aria-label="Faixa anterior">‹</button>
             <button class="button alt play-toggle" type="button" aria-pressed="false"><span aria-hidden="true">▶</span> <span>PLAY</span></button>
-            <button class="button alt" type="button" data-player="next" aria-label="Próxima faixa">›</button>
-            <label style="display:flex; align-items:center; gap:7px; color:rgba(255,248,223,.75); font-size:11px;" for="player-volume"><span aria-hidden="true">VOL</span><input id="player-volume" type="range" min="0" max="100" value="72" style="width:76px; accent-color:var(--aqua);" aria-label="${escapeHTML(t('volumeAria'))}"></label>
+            <button class="button alt player-btn" type="button" data-player="next" aria-label="Próxima faixa">›</button>
+            <label class="player-vol" for="player-volume"><span aria-hidden="true">VOL</span><input id="player-volume" type="range" min="0" max="100" value="72" aria-label="${escapeHTML(t('volumeAria'))}"></label>
           </div>
         </div>
       </div>

@@ -8,6 +8,8 @@ window.AudioPlayer = (() => {
   let index = 0;
   let pronto = false;
   let carregandoLista = null;
+  let volumeAlvo = 0.72;
+  let fadeTimer = null;
   const ouvintes = new Set();
 
   const formatarTempo = (segundos) => {
@@ -45,14 +47,27 @@ window.AudioPlayer = (() => {
       };
     });
 
+  const lerJsonLista = async (response) => {
+    const texto = (await response.text()).replace(/^\uFEFF/, '').trim();
+    const data = JSON.parse(texto);
+    const arquivos = Array.isArray(data) ? data : (data.files || data.tracks || []);
+    return montarFaixas(arquivos.map(String));
+  };
+
+  const listarPeloManifesto = async () => {
+    const response = await fetch(`${PASTA}lista.json`, { cache: 'no-store' });
+    if (!response.ok) throw new Error('sem_lista');
+    return lerJsonLista(response);
+  };
+
   const listarPeloIndiceDaPasta = async () => {
     const response = await fetch(PASTA, { cache: 'no-store' });
     if (!response.ok) throw new Error('pasta_indisponivel');
     const tipo = response.headers.get('content-type') || '';
-    const texto = await response.text();
+    const texto = (await response.text()).replace(/^\uFEFF/, '');
 
     if (tipo.includes('application/json') || texto.trim().startsWith('[') || texto.trim().startsWith('{')) {
-      const data = JSON.parse(texto);
+      const data = JSON.parse(texto.trim());
       const arquivos = Array.isArray(data) ? data : (data.files || data.tracks || []);
       return montarFaixas(arquivos.map(String));
     }
@@ -67,19 +82,12 @@ window.AudioPlayer = (() => {
     return montarFaixas([...encontrados]);
   };
 
-  const listarPeloManifesto = async () => {
-    const response = await fetch(`${PASTA}lista.json`, { cache: 'no-store' });
-    if (!response.ok) throw new Error('sem_lista');
-    const data = await response.json();
-    const arquivos = Array.isArray(data) ? data : (data.files || []);
-    return montarFaixas(arquivos.map(String));
-  };
-
   const descobrirPlaylist = async () => {
+    // Na Hostinger a pasta costuma retornar 403; lista.json e o caminho confiavel.
     try {
-      return await listarPeloIndiceDaPasta();
+      return await listarPeloManifesto();
     } catch (_) {
-      return listarPeloManifesto();
+      return listarPeloIndiceDaPasta();
     }
   };
 
@@ -150,7 +158,12 @@ window.AudioPlayer = (() => {
   });
 
   const play = () => audio.play().then(() => { salvar(); avisar(); }).catch(() => {});
-  const pause = () => { audio.pause(); salvar(); avisar(); };
+  const pause = () => {
+    cancelarFade();
+    audio.pause();
+    salvar();
+    avisar();
+  };
   const toggle = () => (audio.paused ? play() : pause());
   const next = () => carregarFaixa(index + 1, { autoplay: true });
   const prev = () => {
@@ -163,9 +176,61 @@ window.AudioPlayer = (() => {
     carregarFaixa(index - 1, { autoplay: !audio.paused });
   };
   const setVolume = (valor) => {
-    audio.volume = Math.min(1, Math.max(0, Number(valor) / 100));
+    cancelarFade();
+    volumeAlvo = Math.min(1, Math.max(0, Number(valor) / 100));
+    audio.volume = volumeAlvo;
     salvar();
     avisar();
+  };
+
+  const cancelarFade = () => {
+    if (fadeTimer) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+    }
+  };
+
+  const tocarComFade = ({ de = 0, para = volumeAlvo, duracaoMs = 2000 } = {}) => {
+    cancelarFade();
+    const destino = Math.min(1, Math.max(0, para));
+    audio.volume = Math.min(1, Math.max(0, de));
+    avisar();
+
+    const iniciarFade = () => {
+      const passos = 28;
+      const delta = (destino - audio.volume) / passos;
+      const intervalo = duracaoMs / passos;
+      let n = 0;
+      fadeTimer = setInterval(() => {
+        n += 1;
+        if (audio.paused) {
+          cancelarFade();
+          return;
+        }
+        audio.volume = Math.min(1, Math.max(0, audio.volume + delta));
+        if (n >= passos) {
+          audio.volume = destino;
+          cancelarFade();
+        }
+        salvar();
+        avisar();
+      }, intervalo);
+    };
+
+    audio.play().then(() => {
+      iniciarFade();
+      salvar();
+      avisar();
+    }).catch(() => {
+      // Navegadores bloqueiam autoplay com som: libera no primeiro toque/tecla.
+      const liberar = () => {
+        document.removeEventListener('pointerdown', liberar);
+        document.removeEventListener('keydown', liberar);
+        tocarComFade({ de, para: destino, duracaoMs });
+      };
+      document.addEventListener('pointerdown', liberar, { once: true });
+      document.addEventListener('keydown', liberar, { once: true });
+    });
   };
   const seekRatio = (ratio) => {
     if (!audio.duration) return;
@@ -181,7 +246,7 @@ window.AudioPlayer = (() => {
   };
 
   const atualizarDock = () => {
-    const dock = document.querySelector('#audio-dock');
+    const dock = document.querySelector('.site-header #audio-dock');
     if (!dock) return;
     const e = estado();
     const playBtn = dock.querySelector('[data-audio="play"]');
@@ -205,14 +270,20 @@ window.AudioPlayer = (() => {
   };
 
   const montarDock = () => {
-    let dock = document.querySelector('#audio-dock');
+    // Remove cópias órfãs criadas antes do header existir (ficavam no rodapé).
+    document.querySelectorAll('#audio-dock').forEach((el) => {
+      if (!el.closest('.site-header')) el.remove();
+    });
+
+    let dock = document.querySelector('.site-header #audio-dock');
     if (!dock) {
+      const tools = document.querySelector('.nav-tools');
+      if (!tools) return;
       dock = document.createElement('div');
       dock.id = 'audio-dock';
       dock.className = 'audio-dock';
-      const header = document.querySelector('.site-header');
-      if (header) header.appendChild(dock);
-      else document.body.appendChild(dock);
+      dock.setAttribute('aria-label', 'Player de audio');
+      tools.prepend(dock);
     }
     if (dock.dataset.bound === 'true' && dock.querySelector('[data-audio="play"]')) {
       atualizarDock();
@@ -316,13 +387,12 @@ window.AudioPlayer = (() => {
       lista = embaralhar(faixas);
     }
     playlist = lista;
-    if (salvo && typeof salvo.volume === 'number') audio.volume = salvo.volume;
-    else audio.volume = 0.72;
+    volumeAlvo = (salvo && typeof salvo.volume === 'number') ? salvo.volume : 0.72;
 
     const idx = Number.isInteger(salvo?.index) ? Math.min(salvo.index, Math.max(playlist.length - 1, 0)) : 0;
     const time = Number(salvo?.time) || 0;
     carregarFaixa(idx, { autoplay: false, time });
-    if (salvo?.playing) audio.play().catch(() => {});
+    tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: 2200 });
   };
 
   const init = () => {
@@ -364,7 +434,3 @@ window.AudioPlayer = (() => {
     get playlist() { return playlist; }
   };
 })();
-
-document.addEventListener('DOMContentLoaded', () => {
-  window.AudioPlayer?.init();
-});
