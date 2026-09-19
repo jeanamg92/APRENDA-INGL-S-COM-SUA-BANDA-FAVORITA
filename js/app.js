@@ -74,7 +74,7 @@ function definirIdioma(novo) {
 
 function montarDropdownIdioma() {
   const atualFlag = idiomaSite === 'en' ? bandeiraInglaterra : bandeiraBrasil;
-  const atualLabel = idiomaSite === 'en' ? 'EN' : 'PT-BR';
+  const atualLabel = idiomaSite === 'en' ? 'EN' : 'PT';
   return `
     <div class="lang-switch" data-lang-switch>
       <button class="lang-switch-btn" type="button" aria-expanded="false" aria-haspopup="listbox" aria-label="${escapeHTML(t('idiomaAria'))}">
@@ -82,7 +82,7 @@ function montarDropdownIdioma() {
       </button>
       <ul class="lang-menu" role="listbox" hidden>
         <li role="option" aria-selected="${idiomaSite === 'pt'}">
-          <button type="button" data-set-lang="pt">${bandeiraBrasil}<span>PT-BR</span></button>
+          <button type="button" data-set-lang="pt">${bandeiraBrasil}<span>PT</span></button>
         </li>
         <li role="option" aria-selected="${idiomaSite === 'en'}">
           <button type="button" data-set-lang="en">${bandeiraInglaterra}<span>EN</span></button>
