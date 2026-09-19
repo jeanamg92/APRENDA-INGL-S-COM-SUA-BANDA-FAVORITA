@@ -230,7 +230,7 @@ function playerMarkup() {
     <div class="hero-stage" aria-label="${escapeHTML(t('playerAria'))}">
       <span class="hero-sticker hero-sticker-top hero-sticker-shine" id="issue-sticker" role="button" tabindex="0" aria-label="${escapeHTML(t('stickerAria'))}">ISSUE 01 / 1967→2000</span>
       <figure class="hero-photo-frame" id="hero-beatles-photo" tabindex="0" role="button" aria-label="${escapeHTML(t('photoFlipAria'))}">
-        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="./assets/beatles-1967.jpg" alt="${escapeHTML(t('beatlesPhotoAlt'))}" /><figcaption>REAL ARCHIVE / 1967</figcaption></div><div class="hero-flip-face hero-flip-back"><img src="./assets/beatles-flip.jpg" alt="${escapeHTML(t('beatlesFlipAlt'))}" /><figcaption>FLIP SIDE / ARCHIVE</figcaption></div></div>
+        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="/assets/beatles-1967.jpg" alt="${escapeHTML(t('beatlesPhotoAlt'))}" /><figcaption>REAL ARCHIVE / 1967</figcaption></div><div class="hero-flip-face hero-flip-back"><img src="/assets/beatles-flip.jpg" alt="${escapeHTML(t('beatlesFlipAlt'))}" /><figcaption>FLIP SIDE / ARCHIVE</figcaption></div></div>
       </figure>
       <figure class="hero-cover" id="hero-yellow-cover" tabindex="0" role="button" aria-label="${escapeHTML(t('yellowCoverAria'))}">
         <img src="./assets/yellow-submarine-album.jpg" alt="${escapeHTML(t('yellowCoverAlt'))}" />
