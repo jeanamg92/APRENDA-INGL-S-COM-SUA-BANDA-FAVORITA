@@ -37,24 +37,39 @@ window.AudioPlayer = (() => {
     return copia;
   };
 
-  const montarFaixas = (arquivos) => arquivos
-    .filter((nome) => EXTENSAO_AUDIO.test(nome))
-    .filter((nome) => !FORA_DO_ALEATORIO.test(String(nome)))
-    .map((nome) => {
-      const arquivo = nome.split('/').pop().split('?')[0];
+  const montarFaixas = (itens) => itens
+    .map((item) => {
+      if (typeof item === 'string') {
+        return { file: item };
+      }
+      if (item && typeof item === 'object') {
+        return item;
+      }
+      return null;
+    })
+    .filter(Boolean)
+    .map((item) => {
+      const bruto = String(item.file || item.src || item.id || '');
+      const arquivo = bruto.split('/').pop().split('?')[0];
+      if (!arquivo || !EXTENSAO_AUDIO.test(arquivo)) return null;
+      if (FORA_DO_ALEATORIO.test(arquivo)) return null;
+      const ano = Number(item.year);
       return {
         id: arquivo,
-        title: tituloDeArquivo(arquivo),
-        artist: 'Playlist',
+        title: String(item.title || tituloDeArquivo(arquivo)),
+        artist: String(item.artist || 'The Beatles'),
+        album: String(item.album || '').trim() || null,
+        year: Number.isFinite(ano) && ano > 0 ? ano : null,
         src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`
       };
-    });
+    })
+    .filter(Boolean);
 
   const lerJsonLista = async (response) => {
     const texto = (await response.text()).replace(/^\uFEFF/, '').trim();
     const data = JSON.parse(texto);
-    const arquivos = Array.isArray(data) ? data : (data.files || data.tracks || []);
-    return montarFaixas(arquivos.map(String));
+    const itens = Array.isArray(data) ? data : (data.files || data.tracks || []);
+    return montarFaixas(itens);
   };
 
   const listarPeloManifesto = async () => {
@@ -71,8 +86,8 @@ window.AudioPlayer = (() => {
 
     if (tipo.includes('application/json') || texto.trim().startsWith('[') || texto.trim().startsWith('{')) {
       const data = JSON.parse(texto.trim());
-      const arquivos = Array.isArray(data) ? data : (data.files || data.tracks || []);
-      return montarFaixas(arquivos.map(String));
+      const itens = Array.isArray(data) ? data : (data.files || data.tracks || []);
+      return montarFaixas(itens);
     }
 
     const encontrados = new Set();
@@ -359,8 +374,12 @@ window.AudioPlayer = (() => {
     const playBtn = dock.querySelector('[data-audio="play"]');
     const titleEl = dock.querySelector('[data-audio="title"]');
     if (titleEl) {
-      const texto = e.faixa ? `${e.faixa.title} — ${e.faixa.artist}` : 'solte mp3/m4a em /assets/audio';
-      titleEl.textContent = texto;
+      const partes = [];
+      if (e.faixa?.title) partes.push(e.faixa.title);
+      if (e.faixa?.artist) partes.push(e.faixa.artist);
+      if (e.faixa?.album) partes.push(e.faixa.album);
+      if (e.faixa?.year) partes.push(String(e.faixa.year));
+      titleEl.textContent = partes.length ? partes.join(' — ') : 'solte mp3/m4a em /assets/audio';
     }
     dock.querySelector('[data-audio="current"]').textContent = e.currentLabel;
     dock.querySelector('[data-audio="duration"]').textContent = e.durationLabel;
@@ -442,7 +461,14 @@ window.AudioPlayer = (() => {
     const volume = card.querySelector('#player-volume');
 
     if (title) title.textContent = e.faixa?.title || '—';
-    if (artist) artist.textContent = '';
+    if (artist) {
+      const partes = [];
+      if (e.faixa?.artist) partes.push(e.faixa.artist);
+      if (e.faixa?.album) partes.push(e.faixa.album);
+      if (e.faixa?.year) partes.push(String(e.faixa.year));
+      artist.textContent = partes.join(' · ');
+      artist.hidden = !partes.length;
+    }
 
     if (current) current.textContent = e.currentLabel;
     if (duration) duration.textContent = e.durationLabel;
@@ -455,6 +481,32 @@ window.AudioPlayer = (() => {
       if (label) label.textContent = e.playing ? 'PAUSE' : 'PLAY';
     }
     if (volume && document.activeElement !== volume) volume.value = String(Math.round(e.volume * 100));
+
+    const ehRev9 = FORA_DO_ALEATORIO.test(e.faixa?.id || '')
+      || FORA_DO_ALEATORIO.test(e.faixa?.title || '');
+    card.classList.toggle('is-rev9', ehRev9);
+    const agoraTocando = card.querySelector('.dive-card-top span');
+    if (agoraTocando) agoraTocando.textContent = ehRev9 ? 'OWN PLAYING' : 'NOW PLAYING';
+
+    const tocando = !!e.playing;
+    if (tocando) {
+      if (card._divePararTimer) {
+        clearTimeout(card._divePararTimer);
+        card._divePararTimer = null;
+      }
+      card.classList.remove('is-stopping');
+      card.classList.add('is-playing');
+    } else if (card.classList.contains('is-playing')) {
+      card.classList.remove('is-playing');
+      card.classList.add('is-stopping');
+      if (card._divePararTimer) clearTimeout(card._divePararTimer);
+      card._divePararTimer = setTimeout(() => {
+        card.classList.remove('is-stopping');
+        card._divePararTimer = null;
+      }, 520);
+    } else if (!card.classList.contains('is-stopping')) {
+      card.classList.remove('is-playing');
+    }
   };
 
   const ligarHero = () => {
@@ -557,7 +609,9 @@ window.AudioPlayer = (() => {
     if (!arquivo || !EXTENSAO_AUDIO.test(arquivo)) return;
 
     const fadeOutMs = Number(opcoes.fadeOutMs) > 0 ? Number(opcoes.fadeOutMs) : 0;
-    const fadeInMs = Number(opcoes.fadeInMs) > 0 ? Number(opcoes.fadeInMs) : 1400;
+    const fadeInMs = opcoes.fadeInMs === 0 || opcoes.fadeInMs === false
+      ? 0
+      : (Number(opcoes.fadeInMs) > 0 ? Number(opcoes.fadeInMs) : 1400);
     const aoTerminarFadeOut = typeof opcoes.aoTerminarFadeOut === 'function'
       ? opcoes.aoTerminarFadeOut
       : null;
@@ -571,7 +625,9 @@ window.AudioPlayer = (() => {
       const faixaEgg = {
         id: arquivo,
         title: tituloDeArquivo(arquivo),
-        artist: 'Easter egg',
+        artist: FORA_DO_ALEATORIO.test(arquivo) ? 'The Beatles' : 'Easter egg',
+        album: FORA_DO_ALEATORIO.test(arquivo) ? 'The Beatles (White Album)' : null,
+        year: FORA_DO_ALEATORIO.test(arquivo) ? 1968 : null,
         src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`,
         soEasterEgg: true
       };
@@ -595,7 +651,15 @@ window.AudioPlayer = (() => {
         audio.addEventListener('playing', garantirInicio, { once: true });
       }
 
-      tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: fadeInMs });
+      if (fadeInMs > 0) {
+        tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: fadeInMs });
+        return;
+      }
+
+      cancelarFade();
+      audio.muted = false;
+      audio.volume = volumeAlvo;
+      play();
     };
 
     if (fadeOutMs > 0) {

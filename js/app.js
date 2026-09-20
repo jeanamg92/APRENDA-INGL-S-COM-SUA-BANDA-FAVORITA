@@ -17,6 +17,201 @@ const LINGOCLIP_LYRIC = 'https://lingoclip.app/ly';
 const t = (chave) => (i18n[idiomaSite] && i18n[idiomaSite][chave] != null ? i18n[idiomaSite][chave] : (i18n.pt?.[chave] ?? chave));
 const tf = (chave, vars = {}) => String(t(chave)).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
 
+const ativarCursorPsicodelico = () => {
+  if (document.body.dataset.cursorPsico === 'true') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  document.body.dataset.cursorPsico = 'true';
+  document.body.classList.add('is-cursor-psico');
+
+  const rootEl = document.documentElement;
+
+  if (!document.querySelector('.site-cursor-spotlight')) {
+    const spotlightEl = document.createElement('div');
+    spotlightEl.className = 'site-cursor-spotlight';
+    spotlightEl.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(spotlightEl);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        spotlightEl.classList.add('is-on');
+      });
+    });
+  }
+
+  if (!document.querySelector('.cursor-glow')) {
+    const glow = document.createElement('div');
+    glow.className = 'cursor-glow';
+    glow.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(glow);
+  }
+
+  let canvas = document.querySelector('.cursor-trail');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.className = 'cursor-trail';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(canvas);
+  }
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const particulas = [];
+  const spotlight = document.querySelector('.site-cursor-spotlight');
+
+  let mascaraSvg = document.getElementById('mascara-escuridao-psico');
+  if (!mascaraSvg) {
+    mascaraSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    mascaraSvg.setAttribute('id', 'mascara-escuridao-psico');
+    mascaraSvg.setAttribute('width', '0');
+    mascaraSvg.setAttribute('height', '0');
+    mascaraSvg.setAttribute('aria-hidden', 'true');
+    mascaraSvg.innerHTML = `
+      <defs>
+        <mask id="mask-escuridao-polaroid" maskUnits="userSpaceOnUse">
+          <rect id="mask-escuridao-base" width="100%" height="100%" fill="#fff"/>
+          <polygon id="mask-escuridao-furo" fill="#000"/>
+        </mask>
+      </defs>`;
+    document.body.appendChild(mascaraSvg);
+    if (spotlight) {
+      spotlight.style.clipPath = '';
+      spotlight.style.webkitMaskImage = 'url(#mask-escuridao-polaroid)';
+      spotlight.style.maskImage = 'url(#mask-escuridao-polaroid)';
+    }
+  }
+
+  const furoPoly = document.getElementById('mask-escuridao-furo');
+  const baseRect = document.getElementById('mask-escuridao-base');
+
+  const pegarCantosRotacionados = (el, pad = 16, padEsq = 0) => {
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const tr = getComputedStyle(el).transform;
+    let angulo = 0;
+    let escalaX = 1;
+    let escalaY = 1;
+    if (tr && tr !== 'none') {
+      const m = new DOMMatrixReadOnly(tr);
+      angulo = Math.atan2(m.b, m.a);
+      escalaX = Math.hypot(m.a, m.b) || 1;
+      escalaY = Math.hypot(m.c, m.d) || 1;
+    }
+    const hw = (el.offsetWidth / 2 + pad) * escalaX;
+    const hh = (el.offsetHeight / 2 + pad) * escalaY;
+    const extraEsq = padEsq * escalaX;
+    const cos = Math.cos(angulo);
+    const sin = Math.sin(angulo);
+    return [
+      [-hw - extraEsq, -hh],
+      [hw, -hh],
+      [hw, hh],
+      [-hw - extraEsq, hh]
+    ].map(([lx, ly]) => [
+      cx + lx * cos - ly * sin,
+      cy + lx * sin + ly * cos
+    ]);
+  };
+
+  const ajustarFuroPolaroid = () => {
+    if (!furoPoly || !baseRect) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    baseRect.setAttribute('width', String(w));
+    baseRect.setAttribute('height', String(h));
+    mascaraSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    const polaroid = document.querySelector('#hero-beatles-photo');
+    const sticker = document.querySelector('#issue-sticker.is-revealed');
+    const alvos = [polaroid, sticker].filter(Boolean);
+    if (!alvos.length) {
+      furoPoly.setAttribute('points', '');
+      return;
+    }
+
+    let polys = document.querySelectorAll('#mask-escuridao-polaroid polygon');
+    while (polys.length < alvos.length) {
+      const extra = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      extra.setAttribute('fill', '#000');
+      document.getElementById('mask-escuridao-polaroid')?.appendChild(extra);
+      polys = document.querySelectorAll('#mask-escuridao-polaroid polygon');
+    }
+    polys.forEach((poly, i) => {
+      if (i >= alvos.length) {
+        poly.setAttribute('points', '');
+        return;
+      }
+      const ehSticker = alvos[i].id === 'issue-sticker';
+      const pad = ehSticker ? 22 : 20;
+      const padEsq = ehSticker ? 22 : 0;
+      const cantos = pegarCantosRotacionados(alvos[i], pad, padEsq);
+      poly.setAttribute('points', cantos.map(([x, y]) => `${x},${y}`).join(' '));
+    });
+  };
+
+  const ajustarCanvas = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ajustarFuroPolaroid();
+  };
+  ajustarCanvas();
+  window.addEventListener('resize', ajustarCanvas);
+  window.addEventListener('scroll', ajustarFuroPolaroid, { passive: true });
+
+  const atualizarPonteiro = (event) => {
+    rootEl.style.setProperty('--mx', `${event.clientX}px`);
+    rootEl.style.setProperty('--my', `${event.clientY}px`);
+    ajustarFuroPolaroid();
+
+    // trail so em ponteiro fino (mouse); no touch fica pesado
+    const touchPesado = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (touchPesado) return;
+
+    particulas.push({
+      x: event.clientX,
+      y: event.clientY,
+      radius: 8 + Math.random() * 26,
+      opacity: 0.75,
+      vx: (Math.random() - 0.5) * 1.4,
+      vy: (Math.random() - 0.5) * 1.4,
+      hue: Math.random() * 360
+    });
+    if (particulas.length > 75) particulas.shift();
+  };
+  window.addEventListener('pointermove', atualizarPonteiro, { passive: true });
+
+  const desenhar = () => {
+    if (!document.body.classList.contains('is-cursor-psico')) return;
+    ajustarFuroPolaroid();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'lighter';
+
+    for (let i = particulas.length - 1; i >= 0; i -= 1) {
+      const p = particulas[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.opacity -= 0.016;
+      if (p.opacity <= 0) {
+        particulas.splice(i, 1);
+        continue;
+      }
+
+      const gradiente = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+      gradiente.addColorStop(0, `hsla(${p.hue}, 100%, 65%, ${p.opacity})`);
+      gradiente.addColorStop(1, `hsla(${(p.hue + 90) % 360}, 100%, 55%, 0)`);
+      ctx.fillStyle = gradiente;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(desenhar);
+  };
+
+  requestAnimationFrame(desenhar);
+};
+
 const bandeiraBrasil = `<svg class="lang-flag" viewBox="0 0 20 14" aria-hidden="true"><rect width="20" height="14" fill="#009c3b"/><polygon points="10,1.5 18.5,7 10,12.5 1.5,7" fill="#ffdf00"/><circle cx="10" cy="7" r="3.2" fill="#002776"/></svg>`;
 const bandeiraInglaterra = `<svg class="lang-flag" viewBox="0 0 20 14" aria-hidden="true"><rect width="20" height="14" fill="#fff"/><rect x="8.2" width="3.6" height="14" fill="#ce1124"/><rect y="5.2" width="20" height="3.6" fill="#ce1124"/></svg>`;
 
@@ -238,17 +433,33 @@ function playerMarkup() {
         <figcaption>YELLOW SUBMARINE / 1969</figcaption>
       </figure>
       <div class="dive-card" aria-label="Player da playlist do site">
-        <div class="dive-card-top"><span>NOW PLAYING</span><span class="pulse-dot" aria-label="online"></span></div>
-        <div class="dive-screen">
-          <strong data-player="title">Something</strong>
-          <span data-player="artist" hidden></span>
-          <div class="fake-wave" aria-hidden="true"></div>
-          <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
-          <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
-          <div class="dive-player-bar" role="group" aria-label="Controles da playlist">
-            <button class="dive-player-btn" type="button" data-player="prev" aria-label="${escapeHTML(t('faixaAnterior'))}">‹</button>
-            <button class="dive-player-btn dive-player-play play-toggle" type="button" aria-pressed="false"><span aria-hidden="true">▶</span><span>PLAY</span></button>
-            <button class="dive-player-btn" type="button" data-player="next" aria-label="${escapeHTML(t('faixaProxima'))}">›</button>
+        <div class="dive-body">
+          <div class="dive-deck">
+            <div class="dive-turntable" aria-hidden="true">
+              <div class="dive-platter">
+                <div class="dive-vinyl">
+                  <div class="dive-record-label" aria-hidden="true">
+                    <img class="dive-label-normal" src="./assets/apple-records-label.svg?v=20260920b" alt="" />
+                    <img class="dive-label-n9" src="./assets/apple-records-n9.svg?v=20260920i" alt="" />
+                  </div>
+                </div>
+              </div>
+              <div class="dive-tonearm-base"></div>
+              <div class="dive-tonearm"></div>
+              <div class="dive-power"></div>
+            </div>
+            <div class="dive-card-top"><span>NOW PLAYING</span></div>
+          </div>
+          <div class="dive-screen">
+            <strong data-player="title">Something</strong>
+            <span data-player="artist">The Beatles · Abbey Road · 1969</span>
+            <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
+            <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
+            <div class="dive-player-bar" role="group" aria-label="Controles da playlist">
+              <button class="dive-player-btn" type="button" data-player="prev" aria-label="${escapeHTML(t('faixaAnterior'))}">‹</button>
+              <button class="dive-player-btn dive-player-play play-toggle" type="button" aria-pressed="false"><span aria-hidden="true">▶</span><span>PLAY</span></button>
+              <button class="dive-player-btn" type="button" data-player="next" aria-label="${escapeHTML(t('faixaProxima'))}">›</button>
+            </div>
             <label class="dive-player-vol" for="player-volume"><span aria-hidden="true">VOL</span><input id="player-volume" type="range" min="0" max="100" value="72" aria-label="${escapeHTML(t('volumeAria'))}"></label>
           </div>
         </div>
@@ -373,32 +584,63 @@ function abrirTutorialLingo() {
   });
 }
 
+function aplicarStickerLink(sticker, texto, url, aria) {
+  if (!sticker) return;
+  sticker.classList.add('is-revealed');
+  sticker.classList.remove('hero-sticker-shine');
+  sticker.textContent = texto;
+  sticker.dataset.linkUrl = url;
+  sticker.setAttribute('role', 'link');
+  sticker.setAttribute('aria-label', aria);
+}
+
+function revelarStickerRevolucao() {
+  const sticker = document.querySelector('#issue-sticker');
+  aplicarStickerLink(
+    sticker,
+    'a revolucao · clique aqui',
+    'https://matias.blogosfera.uol.com.br/2017/06/01/ha-exatos-50-anos-os-beatles-mudavam-os-rumos-da-historia-com-o-emblematico-sgt-peppers-lonely-hearts-club-band/',
+    'Abrir artigo: a revolucao da musica (Sgt. Pepper)'
+  );
+}
+
 function bindIssueSticker() {
   const sticker = document.querySelector('#issue-sticker');
   if (!sticker || sticker.dataset.bound === 'true') return;
   sticker.dataset.bound = 'true';
 
+  const urlWalrus = 'https://www.beatlesstory.com/pt/blog/paul-is-dead/';
   let cliques = 0;
   let timerReset;
 
-  const revelar = () => {
+  const revelarWalrus = () => {
     if (sticker.classList.contains('is-revealed')) return;
-    sticker.classList.add('is-revealed');
-    sticker.classList.remove('hero-sticker-shine');
-    sticker.textContent = 'the walrus was paul';
-    sticker.setAttribute('aria-label', 'Pista revelada: the walrus was paul');
+    aplicarStickerLink(
+      sticker,
+      'the walrus was paul',
+      urlWalrus,
+      'Abrir artigo: the walrus was paul'
+    );
+  };
+
+  const abrirArtigo = () => {
+    const url = sticker.dataset.linkUrl || urlWalrus;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const registrarClique = () => {
-    if (sticker.classList.contains('is-revealed')) return;
+    if (sticker.classList.contains('is-revealed')) {
+      abrirArtigo();
+      return;
+    }
     cliques += 1;
     window.clearTimeout(timerReset);
     if (cliques >= 2) {
       cliques = 0;
-      revelar();
+      revelarWalrus();
       return;
     }
-    timerReset = window.setTimeout(() => { cliques = 0; }, 900);
+    timerReset = window.setTimeout(() => { cliques = 0; }, 2000);
   };
 
   sticker.addEventListener('click', registrarClique);
@@ -543,10 +785,12 @@ function bindHomeInteractions() {
           }
           window.AudioPlayer?.tocarPorNome?.('Revolution 9.mp3', 9, {
             fadeOutMs: 850,
-            fadeInMs: 2800,
+            fadeInMs: 0,
             aoTerminarFadeOut: () => {
               requestAnimationFrame(() => {
                 heroEl?.classList.add('is-revolution');
+                ativarCursorPsicodelico();
+                revelarStickerRevolucao();
               });
             }
           });

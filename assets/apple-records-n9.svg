@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <radialGradient id="labelDark" cx="45%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#2b2b28"/>
+      <stop offset="70%" stop-color="#20201e"/>
+      <stop offset="100%" stop-color="#181816"/>
+    </radialGradient>
+    <linearGradient id="greenRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4df3d"/>
+      <stop offset="50%" stop-color="#7cae24"/>
+      <stop offset="100%" stop-color="#4f7d17"/>
+    </linearGradient>
+    <radialGradient id="appleCut" cx="48%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#fffdf2"/>
+      <stop offset="58%" stop-color="#f4f0d8"/>
+      <stop offset="100%" stop-color="#d9dfb7"/>
+    </radialGradient>
+    <linearGradient id="stemFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d78363"/>
+      <stop offset="100%" stop-color="#8f4c37"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#greenRing)"/>
+  <circle cx="100" cy="100" r="91" fill="url(#labelDark)"/>
+  <g transform="translate(100 104) scale(.83) translate(-100 -104)">
+    <path d="M100 58C86 46, 68 45, 52 55C35 66, 25 87, 27 112C29 136, 42 155, 61 168C75 177, 89 178, 100 171C111 178, 125 177, 139 168C158 155, 171 136, 173 112C175 87, 165 66, 148 55C132 45, 114 46, 100 58 Z" fill="url(#appleCut)" stroke="#cdd5a9" stroke-width="2.2"/>
+    <path d="M100 63C86 53, 71 53, 58 61C43 70, 34 89, 36 111C38 130, 49 147, 65 158C78 166, 90 167, 100 161C110 167, 122 166, 135 158C151 147, 162 130, 164 111C166 89, 157 70, 142 61C129 53, 114 53, 100 63 Z" fill="none" stroke="rgba(184,196,139,.35)" stroke-width="2"/>
+    <path d="M101 57C110 43, 124 38, 138 41C127 49, 115 54, 101 57 Z" fill="#88a83c" opacity=".9"/>
+    <rect x="96" y="28" width="9" height="35" rx="4.5" fill="url(#stemFill)" transform="rotate(4 100 45)"/>
+    <ellipse cx="72" cy="91" rx="18" ry="28" fill="rgba(255,255,255,.18)" transform="rotate(15 72 91)"/>
+    <text x="100" y="126" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" letter-spacing="1" fill="#111">N. 9</text>
+  </g>
+  <circle cx="100" cy="100" r="8" fill="#0a0a0a"/>
+</svg>
