@@ -1,4 +1,4 @@
-﻿
+
 :root {
   --ink: #101936;
   --ink-soft: #3e4c6d;
@@ -100,7 +100,7 @@ body { padding-top: 86px; }
 .section { padding: 106px 0; position: relative; }
 .section-tight { padding: 70px 0; }
 .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif; color: var(--pink); font-weight: 700; letter-spacing: .17em; font-size: 11px; text-transform: uppercase; }
-.eyebrow::before { content: '✦'; color: var(--yellow-deep); font-size: 16px; }
+.eyebrow::before { content: '?'; color: var(--yellow-deep); font-size: 16px; }
 .section-heading { max-width: 740px; margin-bottom: 35px; }
 .section-heading h2 { margin: 11px 0 12px; font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: .94; letter-spacing: -.07em; text-wrap: balance; }
 .section-heading p { color: var(--ink-soft); font-size: 17px; max-width: 610px; }
@@ -114,7 +114,7 @@ body { padding-top: 86px; }
 .button.ghost:hover { background: var(--paper-2); box-shadow: 4px 4px 0 var(--aqua); }
 .tag { display: inline-block; border: 1px solid currentColor; border-radius: 30px; padding: 4px 9px; font-family: 'Space Grotesk', sans-serif; font-size: 10px; line-height: 1; letter-spacing: .12em; font-weight: 700; text-transform: uppercase; }
 .link-arrow { display: inline-flex; align-items: center; gap: 9px; color: var(--pink); font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
-.link-arrow::after { content: '↗'; font-size: 18px; transition: transform .2s var(--ease); }
+.link-arrow::after { content: '?'; font-size: 18px; transition: transform .2s var(--ease); }
 .link-arrow:hover::after { transform: translate(3px,-3px); }
 
 .hero { min-height: 730px; overflow: hidden; background: var(--blue); color: var(--paper); position: relative; isolation: isolate; }
@@ -151,7 +151,7 @@ body { padding-top: 86px; }
 
 .project-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 24px; align-items: stretch; }
 .project-copy { padding: 35px; border-radius: var(--radius); background: var(--ink); color: var(--paper); position: relative; overflow: hidden; }
-.project-copy::after { content: '✦'; position: absolute; right: 28px; bottom: -30px; color: var(--pink); font-size: 170px; opacity: .6; transform: rotate(15deg); }
+.project-copy::after { content: '?'; position: absolute; right: 28px; bottom: -30px; color: var(--pink); font-size: 170px; opacity: .6; transform: rotate(15deg); }
 .project-copy p { position: relative; z-index: 1; max-width: 560px; color: rgba(255,248,223,.8); font-size: 17px; }
 .project-copy .eyebrow { color: var(--aqua); }
 .project-copy h2 { position: relative; z-index: 1; font-size: clamp(2.3rem, 4.2vw, 4.5rem); margin: 15px 0; }
@@ -244,7 +244,7 @@ body { padding-top: 86px; }
 .form-result ol { margin: 8px 0 0 18px; padding: 0; font-weight: 500; font-size: 13px; }
 
 .page-hero { padding: 90px 0 72px; background: var(--blue); color: var(--paper); position: relative; overflow-x: clip; overflow-y: visible; }
-.page-hero::after { content: '✦'; position: absolute; right: 5%; top: -40px; color: var(--yellow); opacity: .8; font-size: 260px; transform: rotate(14deg); pointer-events: none; }
+.page-hero::after { content: '?'; position: absolute; right: 5%; top: -40px; color: var(--yellow); opacity: .8; font-size: 260px; transform: rotate(14deg); pointer-events: none; }
 .page-hero h1 { font-size: clamp(2.4rem, 11vw, 7rem); max-width: min(930px, 100%); margin: 17px 0 0; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
 .page-hero p { max-width: 620px; color: rgba(255,248,223,.78); font-size: 17px; }
 .guide-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 50px; align-items: start; }
@@ -296,7 +296,7 @@ body { padding-top: 86px; }
 .article-content blockquote { margin: 35px 0; padding: 22px 24px; border-left: 7px solid var(--pink); background: var(--yellow); font-family: 'Space Grotesk', sans-serif; font-size: 24px; line-height: 1.15; letter-spacing: -.04em; }
 .takeaway { position: sticky; top: 105px; padding: 20px; background: var(--ink); color: var(--paper); border-radius: 16px; box-shadow: 6px 6px 0 var(--aqua); }.takeaway h2 { margin: 0 0 14px; font-family: 'Space Grotesk', sans-serif; font-size: 18px; }.takeaway ul { padding-left: 18px; margin: 0; color: rgba(255,248,223,.8); font-size: 13px; }
 .article-back { display: inline-flex; margin-bottom: 24px; color: var(--pink); font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
-.article-back::before { content: '←'; margin-right: 8px; font-size: 17px; }
+.article-back::before { content: '?'; margin-right: 8px; font-size: 17px; }
 .lang-psychedelic {
   margin-top: 22px;
   display: inline-flex;
@@ -422,7 +422,7 @@ body { background: repeating-linear-gradient(0deg, rgba(16,25,54,.025) 0 1px, tr
 @media (max-width: 620px) { .hero::after { right: -110px; top: 45px; } .section::before { left: 7%; } }
 
 
-/* Revisão de conteúdo e hierarquia para a home */
+/* Revis�o de conte�do e hierarquia para a home */
 .stat { justify-content: flex-start; gap: 14px; }
 .stat span { margin-top: 0; }
 .stat small { display: block; color: inherit; opacity: .9; font-size: 16px; line-height: 1.35; font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0; text-transform: none; }
@@ -561,7 +561,7 @@ body::before { opacity: .075; mix-blend-mode: multiply; }
   font-weight: 900;
   letter-spacing: .13em;
 }
-.eyebrow::before { content: '✦'; color: var(--aqua-deep); }
+.eyebrow::before { content: '?'; color: var(--aqua-deep); }
 .section-heading { margin-bottom: 38px; }
 .section-heading h2 { font-size: clamp(2.4rem, 5vw, 5.2rem); }
 .section-heading p { color: var(--ink-soft); font-size: 16px; }
@@ -593,7 +593,7 @@ body::before { opacity: .075; mix-blend-mode: multiply; }
   border-bottom: 4px solid var(--yellow);
 }
 .hero::before {
-  background-image: linear-gradient(90deg, rgba(24,14,75,.96) 0%, rgba(32,28,116,.86) 42%, rgba(240,77,131,.2) 100%), url('../assets/yellow-submarine-album.jpg');
+  background-image: linear-gradient(90deg, rgba(24,14,75,.96) 0%, rgba(32,28,116,.86) 42%, rgba(240,77,131,.2) 100%), url('../assets/yellow-sub-hero.jpg');
   background-position: center;
   background-size: cover;
   opacity: .75;
@@ -634,7 +634,7 @@ body::before { opacity: .075; mix-blend-mode: multiply; }
   transform: rotate(18deg) scaleX(.84);
 }
 .hero-stage::after {
-  content: '✦  ✦  ✦';
+  content: '?  ?  ?';
   position: absolute;
   right: 0;
   bottom: 18px;
@@ -901,7 +901,7 @@ body::before { opacity: .075; mix-blend-mode: multiply; }
   .history-visual img { aspect-ratio: 245 / 236; }
 }
 
-/* Player MP3 na navbar — faixa bem fina estilo Winamp */
+/* Player MP3 na navbar � faixa bem fina estilo Winamp */
 .audio-dock {
   width: 100%;
   height: 18px;
