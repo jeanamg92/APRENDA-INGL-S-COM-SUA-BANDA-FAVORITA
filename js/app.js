@@ -230,7 +230,8 @@ function playerMarkup() {
     <div class="hero-stage" aria-label="${escapeHTML(t('playerAria'))}">
       <span class="hero-sticker hero-sticker-top hero-sticker-shine" id="issue-sticker" role="button" tabindex="0" aria-label="${escapeHTML(t('stickerAria'))}">ISSUE 01 / 1967→2000</span>
       <figure class="hero-photo-frame" id="hero-beatles-photo" tabindex="0" role="button" aria-label="${escapeHTML(t('photoFlipAria'))}">
-        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="/assets/beatles-1967.jpg" alt="${escapeHTML(t('beatlesPhotoAlt'))}" /><figcaption>REAL ARCHIVE / 1967</figcaption></div><div class="hero-flip-face hero-flip-back"><img src="/assets/beatles-flip.jpg" alt="${escapeHTML(t('beatlesFlipAlt'))}" /><figcaption>FLIP SIDE / ARCHIVE</figcaption></div></div>
+        <div class="hero-flip-inner"><div class="hero-flip-face hero-flip-front"><img src="/assets/beatles-1967.jpg" alt="${escapeHTML(t('beatlesPhotoAlt'))}" /></div><div class="hero-flip-face hero-flip-back"><img src="/assets/beatles-1967.jpg" alt="${escapeHTML(t('beatlesFlipAlt'))}" /></div></div>
+        <figcaption class="hero-photo-ano" id="hero-beatles-ano">1967</figcaption>
       </figure>
       <figure class="hero-cover" id="hero-yellow-cover" tabindex="0" role="button" aria-label="${escapeHTML(t('yellowCoverAria'))}">
         <img src="./assets/yellow-submarine-album.jpg" alt="${escapeHTML(t('yellowCoverAlt'))}" />
@@ -414,23 +415,148 @@ function bindHomeInteractions() {
   const heroPhoto = document.querySelector('#hero-beatles-photo');
   if (heroPhoto && heroPhoto.dataset.bound !== 'true') {
     heroPhoto.dataset.bound = 'true';
-    let flipsFoto = 0;
-    let flipTimer;
+    const fotoDefault = '/assets/beatles-1967.jpg';
+    const fotoPaulRingo = '/assets/beatles-flip.jpg';
+    // Uma rodada: 1967 default, 63, 64, 67 (outra), 69, 95, 2024
+    const fotosNormais = [
+      { src: fotoDefault, ano: '1967' },
+      { src: '/assets/flip/beatles-flip-01.jpg', ano: '1963' },
+      { src: '/assets/flip/beatles-flip-02.webp', ano: '1964' },
+      { src: '/assets/flip/beatles-flip-03.jpg', ano: '1967' },
+      { src: '/assets/flip/beatles-flip-04.jpg', ano: '1969' },
+      { src: '/assets/flip/beatles-flip-05.jpg', ano: '1995' },
+      { src: fotoPaulRingo, ano: '2024' }
+    ];
+    const frasesTerceira = [
+      null,
+      null,
+      'denovo?',
+      'o que voce está procurando aqui?',
+      'voce...',
+      'ja viu...',
+      'essas fotos... right?'
+    ];
+    // 4a rodada: default, gatilho Revolution 9, demais psicodelicas (sem data)
+    const fotosEspeciais = [
+      { src: fotoDefault, ano: '1967' },
+      { src: '/assets/flip/beatles-psico-08.jpg', ano: '', revolution: true },
+      { src: '/assets/flip/beatles-psico-02.jpg', ano: '', psicodelico: true },
+      { src: '/assets/flip/beatles-psico-03.jpg', ano: '', psicodelico: true },
+      { src: '/assets/flip/beatles-psico-04.jpg', ano: '', psicodelico: true },
+      { src: '/assets/flip/beatles-psico-05.jpg', ano: '', psicodelico: true },
+      { src: '/assets/flip/beatles-psico-06.jpg', ano: '', psicodelico: true },
+      { src: '/assets/flip/beatles-psico-07.jpg', ano: '', psicodelico: true }
+    ];
+    const indiceGatilho = fotosEspeciais.findIndex((item) => item.revolution);
+    const fotosLoopEspecial = fotosEspeciais.slice(indiceGatilho);
+    let passoFoto = 1; // tela ja comeca na default (indice 0); proximo flip = 1963
+    let faceFrente = true;
     let revolutionTocada = false;
-    const flipPhoto = () => {
-      heroPhoto.classList.toggle('is-flipped');
-      if (revolutionTocada) return;
-      flipsFoto += 1;
-      window.clearTimeout(flipTimer);
-      if (flipsFoto >= 9) {
-        flipsFoto = 0;
-        revolutionTocada = true;
-        window.AudioPlayer?.tocarPorNome?.('Revolution 9.mp3');
-      } else {
-        flipTimer = window.setTimeout(() => { flipsFoto = 0; }, 7000);
+    let flipEmAndamento = false;
+    const imgFrente = heroPhoto.querySelector('.hero-flip-front img');
+    const imgVerso = heroPhoto.querySelector('.hero-flip-back img');
+    const legendaAno = heroPhoto.querySelector('#hero-beatles-ano');
+    const msgEl = heroPhoto.querySelector('#hero-beatles-msg');
+    if (msgEl) msgEl.remove();
+
+    const prepararFoto = (url) => new Promise((resolve) => {
+      const pre = new Image();
+      pre.onload = () => resolve(url);
+      pre.onerror = () => resolve(url);
+      pre.src = url;
+    });
+
+    [...fotosNormais, ...fotosEspeciais].forEach((item) => { prepararFoto(item.src); });
+
+    const n = fotosNormais.length;
+    const fimDuasRodadas = n * 2;
+    const fimTresRodadas = n * 3;
+
+    const pegarProxima = () => {
+      // Rodadas 1 e 2: sequencia normal
+      if (passoFoto < fimDuasRodadas) {
+        return { ...fotosNormais[passoFoto % n] };
+      }
+
+      // Rodada 3: mesma sequencia + mensagens
+      if (passoFoto < fimTresRodadas) {
+        const i = (passoFoto - fimDuasRodadas) % n;
+        const base = fotosNormais[i];
+        const frase = frasesTerceira[i];
+        return frase ? { ...base, msg: frase } : { ...base };
+      }
+
+      // Rodada 4: passa uma vez pela sequencia toda; depois loopa a partir do gatilho
+      const depois = passoFoto - fimTresRodadas;
+      if (depois < fotosEspeciais.length) {
+        return fotosEspeciais[depois];
+      }
+      const i = (depois - fotosEspeciais.length) % fotosLoopEspecial.length;
+      return fotosLoopEspecial[i];
+    };
+
+    const atualizarLegenda = (proxima) => {
+      if (!legendaAno) return;
+      if (proxima.msg) {
+        legendaAno.classList.add('is-mensagem');
+        legendaAno.textContent = proxima.msg;
+        return;
+      }
+      legendaAno.classList.remove('is-mensagem');
+      legendaAno.textContent = proxima.ano || '';
+    };
+
+    const aplicarFoto = async (img, url) => {
+      if (!img) return;
+      if (img.getAttribute('src') === url && img.complete) {
+        if (img.decode) {
+          try { await img.decode(); } catch (_) { /* ignore */ }
+        }
+        return;
+      }
+      await prepararFoto(url);
+      img.src = url;
+      if (img.decode) {
+        try { await img.decode(); } catch (_) { /* ignore */ }
       }
     };
-    heroPhoto.addEventListener('click', flipPhoto);
+
+    const flipPhoto = async () => {
+      if (flipEmAndamento) return;
+      flipEmAndamento = true;
+      const proxima = pegarProxima();
+      const alvoImg = faceFrente ? imgVerso : imgFrente;
+      try {
+        await aplicarFoto(alvoImg, proxima.src);
+        atualizarLegenda(proxima);
+        heroPhoto.classList.toggle('is-flipped');
+        heroPhoto.classList.toggle('is-psicodelico', !!proxima.psicodelico);
+        faceFrente = !faceFrente;
+        if (proxima.revolution && !revolutionTocada) {
+          revolutionTocada = true;
+          const heroEl = document.querySelector('.hero');
+          if (heroEl && !heroEl.querySelector('.hero-fundo-revolution')) {
+            const fundoRev = document.createElement('div');
+            fundoRev.className = 'hero-fundo-revolution';
+            fundoRev.setAttribute('aria-hidden', 'true');
+            heroEl.prepend(fundoRev);
+          }
+          window.AudioPlayer?.tocarPorNome?.('Revolution 9.mp3', 9, {
+            fadeOutMs: 850,
+            fadeInMs: 2800,
+            aoTerminarFadeOut: () => {
+              requestAnimationFrame(() => {
+                heroEl?.classList.add('is-revolution');
+              });
+            }
+          });
+        }
+        passoFoto += 1;
+      } finally {
+        window.setTimeout(() => { flipEmAndamento = false; }, 450);
+      }
+    };
+    heroPhoto.addEventListener('click', () => { flipPhoto(); });
     heroPhoto.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flipPhoto(); }
     });

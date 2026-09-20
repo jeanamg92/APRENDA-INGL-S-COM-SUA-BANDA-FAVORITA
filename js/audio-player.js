@@ -5,6 +5,7 @@ window.AudioPlayer = (() => {
   audio.preload = 'metadata';
 
   let playlist = [];
+  let catalogo = [];
   let index = 0;
   let pronto = false;
   let carregandoLista = null;
@@ -20,6 +21,7 @@ window.AudioPlayer = (() => {
   };
 
   const EXTENSAO_AUDIO = /\.(mp3|m4a)$/i;
+  const FORA_DO_ALEATORIO = /revolution\s*9/i;
 
   const tituloDeArquivo = (nome) => decodeURIComponent(nome)
     .replace(EXTENSAO_AUDIO, '')
@@ -37,6 +39,7 @@ window.AudioPlayer = (() => {
 
   const montarFaixas = (arquivos) => arquivos
     .filter((nome) => EXTENSAO_AUDIO.test(nome))
+    .filter((nome) => !FORA_DO_ALEATORIO.test(String(nome)))
     .map((nome) => {
       const arquivo = nome.split('/').pop().split('?')[0];
       return {
@@ -103,12 +106,18 @@ window.AudioPlayer = (() => {
 
   const salvar = () => {
     try {
+      const ordemLimpa = playlist.filter((f) => !f.soEasterEgg && !FORA_DO_ALEATORIO.test(f.id));
+      const faixaSalva = faixaAtual();
+      const trackIdSalvo = (faixaSalva && !faixaSalva.soEasterEgg && !FORA_DO_ALEATORIO.test(faixaSalva.id))
+        ? faixaSalva.id
+        : (ordemLimpa[Math.min(index, Math.max(ordemLimpa.length - 1, 0))]?.id || null);
       sessionStorage.setItem(STORAGE, JSON.stringify({
-        order: playlist.map((f) => f.id),
-        index,
-        time: audio.currentTime || 0,
+        order: ordemLimpa.map((f) => f.id),
+        index: Math.max(0, ordemLimpa.findIndex((f) => f.id === trackIdSalvo)),
+        trackId: trackIdSalvo,
+        time: (faixaSalva && !faixaSalva.soEasterEgg) ? (audio.currentTime || 0) : 0,
         playing: !audio.paused,
-        volume: audio.volume
+        volume: volumeAlvo
       }));
     } catch (_) { /* ignore */ }
   };
@@ -169,7 +178,40 @@ window.AudioPlayer = (() => {
     avisar();
   };
   const toggle = () => (audio.paused ? play() : pause());
-  const next = () => carregarFaixa(index + 1, { autoplay: true });
+  const novaRodada = (evitarId) => {
+    const base = catalogo.length ? catalogo : playlist;
+    let nova = embaralhar(base);
+    if (evitarId && nova.length > 1 && nova[0]?.id === evitarId) {
+      const outro = nova.findIndex((f, i) => i > 0 && f.id !== evitarId);
+      if (outro > 0) {
+        const tmp = nova[0];
+        nova[0] = nova[outro];
+        nova[outro] = tmp;
+      }
+    }
+    playlist = nova;
+    return playlist;
+  };
+
+  const next = () => {
+    if (!playlist.length) return;
+
+    if (faixaAtual()?.soEasterEgg || FORA_DO_ALEATORIO.test(faixaAtual()?.id || '')) {
+      playlist = playlist.filter((f) => !f.soEasterEgg && !FORA_DO_ALEATORIO.test(f.id));
+      if (!playlist.length) return;
+      if (index >= playlist.length) index = playlist.length - 1;
+      carregarFaixa(index, { autoplay: true });
+      return;
+    }
+
+    if (index >= playlist.length - 1) {
+      const atualId = faixaAtual()?.id;
+      novaRodada(atualId);
+      carregarFaixa(0, { autoplay: true });
+      return;
+    }
+    carregarFaixa(index + 1, { autoplay: true });
+  };
   const prev = () => {
     if (audio.currentTime > 3) {
       audio.currentTime = 0;
@@ -177,6 +219,7 @@ window.AudioPlayer = (() => {
       avisar();
       return;
     }
+    if (index <= 0) return;
     carregarFaixa(index - 1, { autoplay: !audio.paused });
   };
   const setVolume = (valor) => {
@@ -209,26 +252,39 @@ window.AudioPlayer = (() => {
     setTimeout(concluir, 3000);
   });
 
-  const iniciarFadeVolume = (destino, duracaoMs) => {
+  const iniciarFadeVolume = (destino, duracaoMs, { permitirZero = false } = {}) => {
     cancelarFade();
+    const alvo = permitirZero
+      ? Math.min(1, Math.max(0, Number(destino)))
+      : Math.min(1, Math.max(0.05, destino || volumeAlvo || 0.72));
     const passos = 28;
-    const delta = (destino - audio.volume) / passos;
-    const intervalo = duracaoMs / passos;
+    const delta = (alvo - audio.volume) / passos;
+    const intervalo = Math.max(16, duracaoMs / passos);
     let n = 0;
-    fadeTimer = setInterval(() => {
-      n += 1;
-      if (audio.paused) {
-        cancelarFade();
-        return;
-      }
-      audio.volume = Math.min(1, Math.max(0, audio.volume + delta));
-      if (n >= passos) {
-        audio.volume = destino;
-        cancelarFade();
-      }
-      salvar();
-      avisar();
-    }, intervalo);
+    return new Promise((resolve) => {
+      fadeTimer = setInterval(() => {
+        n += 1;
+        audio.volume = Math.min(1, Math.max(0, audio.volume + delta));
+        if (n >= passos) {
+          audio.volume = alvo;
+          cancelarFade();
+          avisar();
+          salvar();
+          resolve();
+          return;
+        }
+        avisar();
+      }, intervalo);
+    });
+  };
+
+  const fadeOutAtual = (duracaoMs = 2000) => {
+    if (audio.paused || audio.volume <= 0.02) {
+      return Promise.resolve();
+    }
+    return iniciarFadeVolume(0, duracaoMs, { permitirZero: true }).then(() => {
+      try { audio.pause(); } catch (_) { /* ignore */ }
+    });
   };
 
   const aguardarGestoParaTocar = (de, destino, duracaoMs) => {
@@ -428,20 +484,37 @@ window.AudioPlayer = (() => {
   window.addEventListener('beforeunload', salvar);
 
   const aplicarPlaylist = (faixas, salvo) => {
-    let lista = faixas;
-    if (salvo?.order?.length) {
-      const mapa = new Map(faixas.map((f) => [f.id, f]));
-      const restaurada = salvo.order.map((id) => mapa.get(id)).filter(Boolean);
-      const faltando = faixas.filter((f) => !salvo.order.includes(f.id));
-      if (restaurada.length) lista = [...restaurada, ...embaralhar(faltando)];
-      else lista = embaralhar(faixas);
-    } else {
-      lista = embaralhar(faixas);
-    }
-    playlist = lista;
-    volumeAlvo = (salvo && typeof salvo.volume === 'number') ? salvo.volume : 0.72;
+    const limpas = faixas.filter((f) => !FORA_DO_ALEATORIO.test(f.id));
+    catalogo = [...limpas];
+    const mapa = new Map(limpas.map((f) => [f.id, f]));
 
-    const idx = Number.isInteger(salvo?.index) ? Math.min(salvo.index, Math.max(playlist.length - 1, 0)) : 0;
+    if (Array.isArray(salvo?.order) && salvo.order.length) {
+      const restaurada = salvo.order
+        .filter((id) => !FORA_DO_ALEATORIO.test(String(id)))
+        .map((id) => mapa.get(id))
+        .filter(Boolean);
+      const faltando = limpas.filter((f) => !salvo.order.includes(f.id));
+      playlist = faltando.length
+        ? [...restaurada, ...embaralhar(faltando)]
+        : restaurada;
+      if (!playlist.length) playlist = embaralhar(limpas);
+    } else {
+      playlist = embaralhar(limpas);
+    }
+
+    volumeAlvo = (salvo && typeof salvo.volume === 'number' && salvo.volume >= 0.05)
+      ? Math.min(1, salvo.volume)
+      : 0.72;
+
+    let idx = 0;
+    const trackId = salvo?.trackId || (Array.isArray(salvo?.order) ? salvo.order[salvo.index] : null);
+    if (trackId) {
+      const encontrado = playlist.findIndex((f) => f.id === trackId);
+      if (encontrado >= 0) idx = encontrado;
+    } else if (Number.isInteger(salvo?.index)) {
+      idx = Math.min(Math.max(salvo.index, 0), Math.max(playlist.length - 1, 0));
+    }
+
     const time = Number(salvo?.time) || 0;
     carregarFaixa(idx, { autoplay: false, time });
 
@@ -479,26 +552,62 @@ window.AudioPlayer = (() => {
     }
   };
 
-  const tocarPorNome = (nomeArquivo) => {
+  const tocarPorNome = (nomeArquivo, inicioSegundos = 0, opcoes = {}) => {
     const arquivo = String(nomeArquivo || '').split('/').pop();
     if (!arquivo || !EXTENSAO_AUDIO.test(arquivo)) return;
 
-    let idx = playlist.findIndex((faixa) => faixa.id === arquivo);
-    if (idx < 0) {
-      playlist = [
-        ...playlist,
-        {
-          id: arquivo,
-          title: tituloDeArquivo(arquivo),
-          artist: 'Easter egg',
-          src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`
-        }
-      ];
-      idx = playlist.length - 1;
+    const fadeOutMs = Number(opcoes.fadeOutMs) > 0 ? Number(opcoes.fadeOutMs) : 0;
+    const fadeInMs = Number(opcoes.fadeInMs) > 0 ? Number(opcoes.fadeInMs) : 1400;
+    const aoTerminarFadeOut = typeof opcoes.aoTerminarFadeOut === 'function'
+      ? opcoes.aoTerminarFadeOut
+      : null;
+
+    const iniciarFaixa = () => {
+      // Nunca entra no aleatorio / catalogo — so toca fora da fila (ex.: flip).
+      playlist = playlist.filter((f) => !f.soEasterEgg && !FORA_DO_ALEATORIO.test(f.id));
+      catalogo = catalogo.filter((f) => !FORA_DO_ALEATORIO.test(f.id));
+      if (index >= playlist.length) index = Math.max(0, playlist.length - 1);
+
+      const faixaEgg = {
+        id: arquivo,
+        title: tituloDeArquivo(arquivo),
+        artist: 'Easter egg',
+        src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`,
+        soEasterEgg: true
+      };
+      const inserirEm = Math.min(index + 1, playlist.length);
+      playlist = [...playlist.slice(0, inserirEm), faixaEgg, ...playlist.slice(inserirEm)];
+
+      const tempoInicio = Number(inicioSegundos) > 0 ? Number(inicioSegundos) : 0;
+      carregarFaixa(inserirEm, { autoplay: false, time: tempoInicio });
+
+      const garantirInicio = () => {
+        if (tempoInicio <= 0) return;
+        try {
+          if (Math.abs((audio.currentTime || 0) - tempoInicio) > 0.35) {
+            audio.currentTime = tempoInicio;
+          }
+        } catch (_) { /* ignore */ }
+      };
+
+      if (tempoInicio > 0) {
+        audio.addEventListener('loadedmetadata', garantirInicio, { once: true });
+        audio.addEventListener('playing', garantirInicio, { once: true });
+      }
+
+      tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: fadeInMs });
+    };
+
+    if (fadeOutMs > 0) {
+      fadeOutAtual(fadeOutMs).then(() => {
+        try { aoTerminarFadeOut?.(); } catch (_) { /* ignore */ }
+        iniciarFaixa();
+      });
+      return;
     }
 
-    carregarFaixa(idx, { autoplay: false, time: 0 });
-    tocarComFade({ de: 0, para: volumeAlvo, duracaoMs: 1400 });
+    try { aoTerminarFadeOut?.(); } catch (_) { /* ignore */ }
+    iniciarFaixa();
   };
 
   return {
