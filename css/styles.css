@@ -130,7 +130,7 @@ body { padding-top: 86px; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 30px; }
 .hero .button { background: var(--yellow); color: var(--ink); box-shadow: 4px 4px 0 var(--pink); }
 .hero .button:hover { background: #ffe274; box-shadow: 7px 7px 0 var(--pink); }
-.hero-annotation { display: flex; gap: 13px; align-items: center; margin-top: 26px; color: rgba(255,248,223,.7); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.hero-annotation { display: flex; gap: 13px; align-items: center; margin-top: 26px; padding-bottom: 1rem; color: rgba(255,248,223,.7); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
 .pulse-dot { width: 9px; height: 9px; background: var(--aqua); border-radius: 50%; box-shadow: 0 0 0 5px rgba(68,226,207,.18); }
 .hero-side { display: flex; justify-content: center; }
 .dive-card { width: min(330px, 100%); padding: 18px; border: 1px solid rgba(255,248,223,.24); border-radius: 22px; background: rgba(13,31,73,.42); box-shadow: 0 20px 60px rgba(2,12,45,.28); backdrop-filter: blur(12px); transform: rotate(4deg); }
