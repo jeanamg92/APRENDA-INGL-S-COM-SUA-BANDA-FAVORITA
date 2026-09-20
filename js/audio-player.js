@@ -60,6 +60,8 @@ window.AudioPlayer = (() => {
         artist: String(item.artist || 'The Beatles'),
         album: String(item.album || '').trim() || null,
         year: Number.isFinite(ano) && ano > 0 ? ano : null,
+        archive: String(item.archive || item.youtube || '').trim() || null,
+        linkTexto: String(item.linkTexto || '').trim() || null,
         src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`
       };
     })
@@ -462,12 +464,32 @@ window.AudioPlayer = (() => {
 
     if (title) title.textContent = e.faixa?.title || '—';
     if (artist) {
-      const partes = [];
-      if (e.faixa?.artist) partes.push(e.faixa.artist);
-      if (e.faixa?.album) partes.push(e.faixa.album);
-      if (e.faixa?.year) partes.push(String(e.faixa.year));
-      artist.textContent = partes.join(' · ');
-      artist.hidden = !partes.length;
+      artist.textContent = e.faixa?.artist || '';
+      artist.hidden = !e.faixa?.artist;
+    }
+    const album = card.querySelector('[data-player="album"]');
+    const year = card.querySelector('[data-player="year"]');
+    if (album) {
+      album.textContent = e.faixa?.album || '';
+      album.hidden = !e.faixa?.album;
+    }
+    if (year) {
+      year.textContent = e.faixa?.year ? String(e.faixa.year) : '';
+      year.hidden = !e.faixa?.year;
+    }
+    const archive = card.querySelector('[data-player="archive"]');
+    if (archive) {
+      const url = e.faixa?.archive || '';
+      if (url) {
+        archive.href = url;
+        archive.textContent = e.faixa?.linkTexto || 'OUÇA O ÁLBUM AQUI';
+        archive.classList.toggle('is-doc', !!e.faixa?.linkTexto);
+        archive.hidden = false;
+      } else {
+        archive.removeAttribute('href');
+        archive.classList.remove('is-doc');
+        archive.hidden = true;
+      }
     }
 
     if (current) current.textContent = e.currentLabel;
@@ -489,6 +511,11 @@ window.AudioPlayer = (() => {
     if (agoraTocando) agoraTocando.textContent = ehRev9 ? 'OWN PLAYING' : 'NOW PLAYING';
 
     const tocando = !!e.playing;
+    if (ehRev9 && tocando) {
+      window.entrarModoRevolucao?.();
+    } else {
+      window.sairModoRevolucao?.();
+    }
     if (tocando) {
       if (card._divePararTimer) {
         clearTimeout(card._divePararTimer);
@@ -628,6 +655,9 @@ window.AudioPlayer = (() => {
         artist: FORA_DO_ALEATORIO.test(arquivo) ? 'The Beatles' : 'Easter egg',
         album: FORA_DO_ALEATORIO.test(arquivo) ? 'The Beatles (White Album)' : null,
         year: FORA_DO_ALEATORIO.test(arquivo) ? 1968 : null,
+        archive: FORA_DO_ALEATORIO.test(arquivo)
+          ? 'https://www.youtube.com/results?search_query=The+Beatles+White+Album+full+album&sp=EgIQAw%3D%3D'
+          : null,
         src: `${PASTA}${encodeURIComponent(arquivo).replace(/%2F/gi, '/')}`,
         soEasterEgg: true
       };

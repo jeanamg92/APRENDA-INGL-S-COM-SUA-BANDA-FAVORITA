@@ -628,6 +628,16 @@ body::before { opacity: .075; mix-blend-mode: multiply; }
   opacity: 1;
   animation: kenburns 16s ease-in-out 1.2s infinite alternate;
 }
+.hero.is-leaving-revolution .hero-fundo-revolution {
+  opacity: 0;
+  animation: none;
+  transition: opacity 3.6s ease;
+}
+.hero.is-leaving-revolution::before {
+  opacity: .75;
+  filter: saturate(1.2);
+  transition: opacity 3.2s ease, filter 3.2s ease;
+}
 @keyframes kenburns {
   from { transform: scale(1.08) translate(0, 0); }
   to { transform: scale(1.2) translate(-2.5%, 1.5%); }
@@ -674,6 +684,10 @@ body.is-cursor-psico .cursor-glow {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes cursor-glow-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 .cursor-trail {
   display: none;
   position: fixed;
@@ -687,6 +701,11 @@ body.is-cursor-psico .cursor-glow {
 body.is-cursor-psico .cursor-trail {
   display: block;
   animation: cursor-glow-in 2.4s ease forwards;
+}
+body.is-cursor-psico-saindo .cursor-glow,
+body.is-cursor-psico-saindo .cursor-trail {
+  display: block;
+  animation: cursor-glow-out 2.4s ease forwards;
 }
 @media (prefers-reduced-motion: reduce) {
   .site-cursor-spotlight,
@@ -998,18 +1017,93 @@ body.is-cursor-psico .cursor-trail {
   transform: rotate(0deg) translateY(-4px) translateZ(40px);
 }
 .dive-card-top {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 6px;
   margin-bottom: 0;
+  min-height: 1.2em;
   color: var(--yellow);
   font-family: 'Courier New', monospace;
   font-size: 10px;
   letter-spacing: .12em;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .25s ease, visibility .25s ease;
 }
 .dive-card.is-playing .dive-card-top {
+  visibility: visible;
+  opacity: 1;
+}
+.dive-meta {
   display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 6px;
+  min-width: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.3;
+  color: rgba(255, 249, 234, .78);
+}
+.dive-meta span {
+  display: block;
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.dive-meta [data-player="artist"] {
+  color: var(--aqua);
+  font-weight: 700;
+}
+.dive-meta [data-player="year"] {
+  color: rgba(255, 249, 234, .55);
+  letter-spacing: .06em;
+}
+.dive-meta span[hidden] {
+  display: none;
+}
+.dive-archive {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 5px 7px;
+  border: 1px solid var(--yellow);
+  border-radius: 2px;
+  background: rgba(247, 213, 38, .12);
+  color: var(--yellow);
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.2;
+  text-decoration: none;
+  text-align: center;
+  transition: background .2s ease, color .2s ease;
+}
+.dive-archive:hover {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.dive-archive.is-doc {
+  margin-top: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 249, 234, .62);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .02em;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: left;
+}
+.dive-archive.is-doc:hover {
+  background: transparent;
+  color: var(--aqua);
+}
+.dive-archive[hidden] {
+  display: none;
 }
 .dive-body {
   display: grid;
@@ -1188,12 +1282,12 @@ body.is-cursor-psico .cursor-trail {
 }
 .dive-screen {
   min-width: 0;
-  min-height: 168px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  padding: 18px 14px 16px;
+  justify-content: flex-start;
+  gap: 7px;
+  padding: 12px 12px 11px;
   border: 1px solid rgba(73,221,208,.55);
   border-radius: 4px;
   background: rgba(12, 18, 48, .92);
@@ -1202,24 +1296,13 @@ body.is-cursor-psico .cursor-trail {
   display: block;
   margin: 0;
   font-family: 'Arial Black', Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .dive-screen span { color: var(--aqua); font-family: 'Courier New', monospace; font-size: 10px; }
-.dive-screen [data-player="artist"] {
-  display: block;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  opacity: .92;
-}
-.dive-screen [data-player="artist"][hidden] {
-  display: none;
-}
 .dive-screen .progress-line { margin: 0; }
 .dive-screen .player-time {
   display: flex;

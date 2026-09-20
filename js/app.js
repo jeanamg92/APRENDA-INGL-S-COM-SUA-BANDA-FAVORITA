@@ -18,25 +18,34 @@ const t = (chave) => (i18n[idiomaSite] && i18n[idiomaSite][chave] != null ? i18n
 const tf = (chave, vars = {}) => String(t(chave)).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
 
 const ativarCursorPsicodelico = () => {
-  if (document.body.dataset.cursorPsico === 'true') return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  document.body.dataset.cursorPsico = 'true';
+  if (window._psicoOutTimer) {
+    clearTimeout(window._psicoOutTimer);
+    window._psicoOutTimer = null;
+  }
+
+  document.body.classList.remove('is-cursor-psico-saindo');
   document.body.classList.add('is-cursor-psico');
+  document.body.dataset.cursorPsico = 'true';
 
   const rootEl = document.documentElement;
 
-  if (!document.querySelector('.site-cursor-spotlight')) {
-    const spotlightEl = document.createElement('div');
+  let spotlightEl = document.querySelector('.site-cursor-spotlight');
+  if (!spotlightEl) {
+    spotlightEl = document.createElement('div');
     spotlightEl.className = 'site-cursor-spotlight';
     spotlightEl.setAttribute('aria-hidden', 'true');
     document.body.appendChild(spotlightEl);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        spotlightEl.classList.add('is-on');
-      });
-    });
   }
+  spotlightEl.classList.remove('is-on');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (document.body.dataset.cursorPsico === 'true') {
+        spotlightEl.classList.add('is-on');
+      }
+    });
+  });
 
   if (!document.querySelector('.cursor-glow')) {
     const glow = document.createElement('div');
@@ -52,6 +61,23 @@ const ativarCursorPsicodelico = () => {
     canvas.setAttribute('aria-hidden', 'true');
     document.body.appendChild(canvas);
   }
+
+  // ja ligado: so reacende o visual
+  if (document.body.dataset.cursorPsicoBound === 'true') {
+    const glow = document.querySelector('.cursor-glow');
+    const trail = document.querySelector('.cursor-trail');
+    [glow, trail].forEach((el) => {
+      if (!el) return;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+    if (typeof window._psicoDesenhar === 'function') {
+      requestAnimationFrame(window._psicoDesenhar);
+    }
+    return;
+  }
+  document.body.dataset.cursorPsicoBound = 'true';
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
@@ -164,7 +190,6 @@ const ativarCursorPsicodelico = () => {
     rootEl.style.setProperty('--my', `${event.clientY}px`);
     ajustarFuroPolaroid();
 
-    // trail so em ponteiro fino (mouse); no touch fica pesado
     const touchPesado = window.matchMedia('(hover: none), (pointer: coarse)').matches;
     if (touchPesado) return;
 
@@ -209,8 +234,68 @@ const ativarCursorPsicodelico = () => {
     requestAnimationFrame(desenhar);
   };
 
+  window._psicoDesenhar = desenhar;
   requestAnimationFrame(desenhar);
 };
+
+const desativarCursorPsicodelico = () => {
+  if (document.body.dataset.cursorPsico !== 'true') return;
+
+  document.body.dataset.cursorPsico = 'false';
+  document.body.classList.add('is-cursor-psico-saindo');
+  document.querySelector('.site-cursor-spotlight')?.classList.remove('is-on');
+
+  if (window._psicoOutTimer) clearTimeout(window._psicoOutTimer);
+  window._psicoOutTimer = setTimeout(() => {
+    document.body.classList.remove('is-cursor-psico', 'is-cursor-psico-saindo');
+    const canvas = document.querySelector('.cursor-trail');
+    const ctx = canvas?.getContext?.('2d');
+    if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    window._psicoOutTimer = null;
+  }, 2400);
+};
+
+let modoRevolucaoAtivo = false;
+
+const entrarModoRevolucao = () => {
+  if (modoRevolucaoAtivo) return;
+  modoRevolucaoAtivo = true;
+
+  const heroEl = document.querySelector('.hero');
+  if (heroEl) {
+    if (!heroEl.querySelector('.hero-fundo-revolution')) {
+      const fundoRev = document.createElement('div');
+      fundoRev.className = 'hero-fundo-revolution';
+      fundoRev.setAttribute('aria-hidden', 'true');
+      heroEl.prepend(fundoRev);
+    }
+    heroEl.classList.remove('is-leaving-revolution');
+    requestAnimationFrame(() => {
+      heroEl.classList.add('is-revolution');
+    });
+  }
+
+  ativarCursorPsicodelico();
+};
+
+const sairModoRevolucao = () => {
+  if (!modoRevolucaoAtivo) return;
+  modoRevolucaoAtivo = false;
+
+  const heroEl = document.querySelector('.hero');
+  if (heroEl?.classList.contains('is-revolution')) {
+    heroEl.classList.add('is-leaving-revolution');
+    heroEl.classList.remove('is-revolution');
+    window.setTimeout(() => {
+      heroEl.classList.remove('is-leaving-revolution');
+    }, 3600);
+  }
+
+  desativarCursorPsicodelico();
+};
+
+window.entrarModoRevolucao = entrarModoRevolucao;
+window.sairModoRevolucao = sairModoRevolucao;
 
 const bandeiraBrasil = `<svg class="lang-flag" viewBox="0 0 20 14" aria-hidden="true"><rect width="20" height="14" fill="#009c3b"/><polygon points="10,1.5 18.5,7 10,12.5 1.5,7" fill="#ffdf00"/><circle cx="10" cy="7" r="3.2" fill="#002776"/></svg>`;
 const bandeiraInglaterra = `<svg class="lang-flag" viewBox="0 0 20 14" aria-hidden="true"><rect width="20" height="14" fill="#fff"/><rect x="8.2" width="3.6" height="14" fill="#ce1124"/><rect y="5.2" width="20" height="3.6" fill="#ce1124"/></svg>`;
@@ -449,10 +534,15 @@ function playerMarkup() {
               <div class="dive-power"></div>
             </div>
             <div class="dive-card-top"><span>NOW PLAYING</span></div>
+            <div class="dive-meta">
+              <span data-player="artist">The Beatles</span>
+              <span data-player="album">Abbey Road</span>
+              <span data-player="year">1969</span>
+              <a class="dive-archive" data-player="archive" href="https://www.youtube.com/results?search_query=The+Beatles+Abbey+Road+full+album&amp;sp=EgIQAw%3D%3D" target="_blank" rel="noopener noreferrer">OUÇA O ÁLBUM AQUI</a>
+            </div>
           </div>
           <div class="dive-screen">
             <strong data-player="title">Something</strong>
-            <span data-player="artist">The Beatles · Abbey Road · 1969</span>
             <div class="progress-line" aria-hidden="false" role="slider" tabindex="0"><i id="player-progress"></i></div>
             <div class="player-time"><span id="player-current">00:00</span><span id="player-duration">00:00</span></div>
             <div class="dive-player-bar" role="group" aria-label="Controles da playlist">
@@ -788,8 +878,7 @@ function bindHomeInteractions() {
             fadeInMs: 0,
             aoTerminarFadeOut: () => {
               requestAnimationFrame(() => {
-                heroEl?.classList.add('is-revolution');
-                ativarCursorPsicodelico();
+                entrarModoRevolucao();
                 revelarStickerRevolucao();
               });
             }
